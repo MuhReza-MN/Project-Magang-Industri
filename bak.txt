@@ -1,0 +1,3 @@
+<div className="keen-slider__slide flex justify-center relative">
+              <EventCard title="Event1" />
+            </div>
