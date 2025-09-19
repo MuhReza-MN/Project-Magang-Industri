@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import NavLink from "./dNavbar";
 
 export default function MobileSidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,38 +41,7 @@ export default function MobileSidebar() {
           </button>
         </div>
         <ul className="flex flex-col gap-4 p-4 text-sm">
-          <li>
-            <button
-              type="button"
-              className="underline underline-offset-3 w-full text-left text-gray-300 font-extrabold text-sm hover:text-gray-400 active:text-gray-400 transition-colors duration-50"
-            >
-              Lihat Event
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              className="underline underline-offset-3 w-full text-left text-gray-300 font-extrabold text-sm hover:text-gray-400 active:text-gray-400 transition-colors duration-50"
-            >
-              About Us
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              className="underline underline-offset-3 w-full text-left text-gray-300 font-extrabold text-sm hover:text-gray-400 active:text-gray-400 transition-colors duration-50"
-            >
-              FAQ
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              className="underline underline-offset-3 w-full text-left text-gray-300 font-extrabold text-sm hover:text-gray-400 active:text-gray-400 transition-colors duration-50"
-            >
-              Daftarkan Event
-            </button>
-          </li>
+          <NavLink onNavigate={() => setIsOpen(false)} />
         </ul>
       </aside>
     </>
