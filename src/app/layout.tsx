@@ -11,11 +11,11 @@ export default function RootLayout({
     <html lang="en">
       <body className="flex flex-col min-h-screen">
         <header className="sticky top-0 left-0 z-50 w-full bg-slate-900/75 text-white">
-          <nav className=" mx-auto flex justify-between items-center lg:px-4 lg:py-3">
-            <div className="font-bold bg-slate-400 h-10 w-35 lg:w-30 text-center py-2">
+          <nav className=" mx-auto flex justify-between items-center lg:px-[clamp(0.25rem,0.75vw,2rem)] lg:py-[clamp(0.15rem,1.5vh,2rem)]">
+            <div className="flex font-bold bg-slate-400 h-[clamp(2.5rem,5vh,7.5rem)] w-35 lg:w-[clamp(5.5rem,10vw,25rem)] text-[clamp(0.9rem,1.2vw,10rem)] justify-center items-center">
               LOGO RQRE
             </div>
-            <ul className="hidden md:flex lg:flex gap-6 text-sm md:mr-2">
+            <ul className="hidden md:flex lg:flex gap-[clamp(1rem,1.2vw,5rem)] text-sm md:mr-2">
               <NavLink />
             </ul>
             <MobileSidebar />
@@ -24,7 +24,7 @@ export default function RootLayout({
         <div className="flex-grow">
           <main className="flex-1 relative">{children}</main>
         </div>
-        <footer className="bg-neutral-800 text-center py-3 text-sm">
+        <footer className="flex justify-center items-center bg-neutral-800 text-center py-[clamp(0.5rem,1.5vh,1.5rem)] text-[clamp(0.75rem,1.25vw,4rem)]">
           © 2025 RQRE.ID — All rights reserved.
         </footer>
       </body>

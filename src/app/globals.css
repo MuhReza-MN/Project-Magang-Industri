@@ -24,3 +24,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.react-tel-input .selected-flag .flag {
+  margin-left: 40%;
+  transform: scale(2.5);
+}
+
+.react-tel-input .country-list .flag {
+  margin-left: 0.5rem;
+  transform: scale(2.5);
+}
+
+.react-tel-input .country-list .country-name {
+    margin-left: 1rem
+}
