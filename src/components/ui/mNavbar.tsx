@@ -51,7 +51,7 @@ export default function MobileSidebar() {
           />
           <aside
             onTransitionEnd={handleTransitionEnd}
-            className={`absolute top-0 right-0 h-64 w-64 bg-slate-800 border-s-6 border-t-6 border-b-6 border-slate-900/50 text-white z-50 transition-transform duration-300 ease-in-out ${
+            className={`absolute top-0 right-0 h-72 w-64 bg-slate-800 border-s-6 border-t-6 border-b-6 border-slate-900/50 text-white z-50 transition-transform duration-300 ease-in-out ${
               isOpen
                 ? "translate-x-0 pointer-events-auto"
                 : "translate-x-full pointer-events-none"

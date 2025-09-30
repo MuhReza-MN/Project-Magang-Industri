@@ -2,11 +2,16 @@
 
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  animate,
+} from "framer-motion";
 import { FiZoomIn, FiZoomOut } from "react-icons/fi";
-import { BsArrowsFullscreen } from "react-icons/bs";
 import PhoneInput from "react-phone-input-2";
 import Image from "next/image";
+import ExpandImage from "@/components/ui/expandImgBtn";
 import "react-phone-input-2/lib/style.css";
 
 type ERegisProps = {
@@ -17,6 +22,31 @@ type ERegisProps = {
 export default function EventRegisForm({ eventName, image }: ERegisProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [phone, setPhone] = useState("");
+  const [scale, setScale] = useState(1);
+
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const scaleMv = useMotionValue(1);
+
+  const handleZoom = (newScale: number) => {
+    const clamped = Math.min(Math.max(newScale, 1), 3);
+
+    animate(scaleMv, clamped, { duration: 0.3, ease: "easeInOut" });
+    setScale(clamped);
+
+    if (clamped === 1) {
+      animate(x, 0, { duration: 0.3 });
+      animate(y, 0, { duration: 0.3 });
+    }
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    setScale(1);
+    animate(scaleMv, 1, { duration: 0.2, ease: "easeInOut" })
+    animate(x, 0, { duration: 0.2, ease: "easeInOut" })
+    animate(y, 0, { duration: 0.2, ease: "easeInOut" })
+  }
 
   return (
     <>
@@ -43,37 +73,70 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 50 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="relative w-full max-h-screen flex items-start justify-center overflow-y-auto p-4"
+                className="relative w-full max-h-screen flex items-center justify-center overflow-y-auto p-4"
               >
                 <div className="flex flex-col md:flex-row items-center bg-white rounded-[clamp(0.5rem,1vw,1.5rem)] p-4 shadow-lg relative z-50 top-0 w-100 md:w-fit">
-                  <div className="relative flex items-center justify-center mb-5 md:mb-2 mt-2 rounded-[clamp(10rem,20vw,500rem)] w-[clamp(21.25rem,20vw,52.5rem)] h-[clamp(21.25rem,20vw,52.5rem)]">
+                  <div className="relative z-45 flex items-center justify-center mb-5 md:mb-2 mt-2 w-[clamp(21.25rem,20vw,52.5rem)] h-[clamp(21.25rem,20vw,52.5rem)] shadow-md bg-gray-100/70 pt-1 px-0.5">
                     <div className="absolute top-2 md:-top-2 lg:-top-5 -right-3 md:-right-2 flex flex-col-reverse md:flex-row gap-2 z-50">
-                      <button
+                      <motion.button
                         type="button"
-                        className="w-[clamp(2.5rem,2vw,5.5rem)] h-[clamp(2.5rem,2vw,5.5rem)] rounded-full bg-gray-300/60 flex items-center justify-center hover:bg-gray-200/80 active:bg-gray-200/80"
+                        onClick={() => handleZoom(scale + 0.2)}
+                        disabled={scale >= 3}
+                        whileTap={{ scale: 0.85 }}
+                        animate={scale >= 3 ? { scale: [1, 1.1, 1] } : {}}
+                        transition={{ duration: 0.2 }}
+                        className={`w-[clamp(2.5rem,2vw,5.5rem)] h-[clamp(2.5rem,2vw,5.5rem)] rounded-full flex items-center justify-center 
+                          ${scale >= 3 ? "cursor-not-allowed bg-gray-800/60" : "bg-gray-300/60 hover:bg-gray-200/80 active:bg-gray-200/80"}
+                        `}
                       >
-                        <FiZoomIn className="text-[clamp(2rem,2vw,4.5rem)] text-slate-950/70 hover:text-black/80 active:text-black/80" />
-                      </button>
-                      <button
+                        <FiZoomIn
+                          className={`text-[clamp(2rem,2vw,4.5rem)] 
+                            ${scale >= 3 ? "text-gray-300/70" : "text-slate-950/70 hover:text-black/80 active:text-black/80"}
+                          `}
+                        />
+                      </motion.button>
+                      <motion.button
                         type="button"
-                        className="w-[clamp(2.5rem,2vw,5.5rem)] h-[clamp(2.5rem,2vw,5.5rem)] rounded-full bg-gray-300/60 flex items-center justify-center hover:bg-gray-200/80 active:bg-gray-200/80"
+                        onClick={() => handleZoom(scale - 0.2)}
+                        disabled={scale <= 1}
+                        whileTap={{ scale: 0.85 }}
+                        animate={scale <= 1 ? { scale: [1, 1.1, 1] } : {}}
+                        transition={{ duration: 0.2 }}
+                        className={`w-[clamp(2.5rem,2vw,5.5rem)] h-[clamp(2.5rem,2vw,5.5rem)] rounded-full flex items-center justify-center 
+                          ${scale <= 1 ? "cursor-not-allowed bg-gray-800/60" : "bg-gray-300/60 hover:bg-gray-200/80 active:bg-gray-200/80"}
+                        `}
                       >
-                        <FiZoomOut className="text-[clamp(2rem,2vw,4.5rem)] text-slate-950/70 hover:text-black/80 active:text-black/80" />
-                      </button>
-                      <button
-                        type="button"
-                        className="w-[clamp(2.5rem,2vw,5.5rem)] h-[clamp(2.5rem,2vw,5.5rem)] rounded-full bg-gray-300/60 flex items-center justify-center hover:bg-gray-200/80 active:bg-gray-200/80"
-                      >
-                        <BsArrowsFullscreen className="text-[clamp(1.5rem,1.2vw,3rem)] text-slate-950/70 hover:text-black/80 active:text-black/80" />
-                      </button>
+                        <FiZoomOut
+                          className={`text-[clamp(2rem,2vw,4.5rem)] 
+                            ${scale <= 1 ? "text-gray-300/70" : "text-slate-950/70 hover:text-black/80 active:text-black/80"}
+                          `}
+                        />
+                      </motion.button>
+                      <ExpandImage imageName={`Poster ${eventName}`} image={image} />
                     </div>
-                    <Image
-                      className="flex relative rounded-xl z-40"
-                      src={"/placeholder.webp"}
-                      layout="fill"
-                      objectFit="contain"
-                      alt="PlaceHolder Pict"
-                    />
+                    <div className="flex relative z-40 w-full h-full border-4 border-gray-100/70 overflow-hidden">
+                      <motion.div
+                        className="absolute inset-0 flex items-center justify-center"
+                        style={{ scale: scaleMv, x, y }}
+                        drag
+                        dragConstraints={{
+                          left: -200 * (scale - 1),
+                          right: 200 * (scale - 1),
+                          top: -200 * (scale - 1),
+                          bottom: 200 * (scale - 1),
+                        }}
+                        dragElastic={0.2}
+                        dragMomentum={false}
+                      >
+                        <Image
+                          src={image ? `/poster/${image}` : "/placeholder.webp"}
+                          layout="fill"
+                          objectFit="contain"
+                          alt={`${eventName} Poster Image`}
+                          className="pointer-events-none select-none"
+                        />
+                      </motion.div>
+                    </div>
                   </div>
                   <div className="flex flex-col md:ml-4">
                     <h2 className="text-[clamp(1.25rem,2vw,3rem)] text-center md:text-left font-bold mb-2 text-black">
@@ -135,7 +198,7 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                           type="button"
                           className="px-[clamp(1rem,1.2vw,1.5rem)] py-[clamp(0.5rem,1vh,1rem)] text-[clamp(1rem,1.2vw,3rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-gray-400 text-white font-bold hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25"
                           onClick={() => {
-                            setIsOpen(false);
+                            handleClose();
                             setPhone("");
                           }}
                         >
@@ -145,7 +208,7 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                           type="button"
                           className="px-[clamp(1rem,1.2vw,1.5rem)] py-[clamp(0.5rem,1vh,1rem)] text-[clamp(1rem,1.2vw,3rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-white font-bold"
                           onClick={() => {
-                            setIsOpen(false);
+                            handleClose();
                             setPhone("");
                           }}
                         >

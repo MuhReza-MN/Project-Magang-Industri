@@ -17,8 +17,16 @@ export default function HomeClient() {
 
   const handleScroll = (id: string) => {
     const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    const header = document.querySelector("header");
+    if (el && header) {
+      const headerOffset = header.getBoundingClientRect().height;
+      const elementPos = el.offsetTop;
+      const offsetPos = elementPos - headerOffset;
+
+      window.scrollTo({
+        top: offsetPos,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -142,7 +150,7 @@ export default function HomeClient() {
   return (
     <div className="min-h-screen contain-inline-size">
       <div className="absolute inset-0  bg-gradient-to-r from-[#7c3aed] to-[#7dd3fc]" />
-      <div className="absolute inset-y-0 left-0 w-[100%] md:w-[90%] -skew-x-40 origin-top-left bg-gradient-to-br from-[#0b1220] to-[#1a1f2e]" />
+      <div className="absolute inset-y-0 left-0 w-[100%] md:w-[99.9%] -skew-x-60 origin-top-left bg-gradient-to-br from-[#0b1220] to-[#1a1f2e]" />
       <section
         id="hero"
         className="relative z-10 min-h-[clamp(5.5rem,100vh,100rem)] flex flex-col items-center"
@@ -153,7 +161,7 @@ export default function HomeClient() {
           viewport={{ once: true, amount: 0.2 }}
           variants={flyVariants.up}
         >
-          <h1 className="pt-[clamp(7rem,5vh,3000rem)] text-[clamp(4.5rem,10vw,120rem)] flex justify-center-safe text-shadow-md xl:text-shadow-lg text-shadow-black">
+          <h1 className="pt-20 md:pt-[clamp(2rem,8vw,3000rem)] text-[clamp(4.5rem,10vw,120rem)] flex justify-center-safe text-shadow-md xl:text-shadow-lg text-shadow-black">
             RQRE.ID
           </h1>
           <h3 className="px-[clamp(0.75rem,4vw,120rem)] flex justify-center text-center text-balance text-[clamp(1.125rem,1.5vw,2000rem)] text-shadow-md xl:text-shadow-lg text-shadow-gray-700/80">
@@ -168,7 +176,7 @@ export default function HomeClient() {
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={flyVariants.btn}
-          className="flex items-center flex-col mt-[clamp(1rem,1vw,4rem)]"
+          className="flex items-center justify-center flex-col md:flex-row gap-3 md:gap-[clamp(0rem,2.5vw,10rem)] w-full mt-[clamp(1rem,2vw,4rem)]"
         >
           <button
             type="button"
@@ -179,13 +187,13 @@ export default function HomeClient() {
           </button>
           <button
             type="button"
-            className="bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-[clamp(2.5rem,3vw,5rem)] w-[clamp(12.5rem,15vw,500%)] rounded-4xl mt-[clamp(1rem,1vw,2.5rem)] text-shadow-md font-semibold text-[clamp(1.125rem,1vw,3rem)]"
+            className="bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-[clamp(2.5rem,3vw,5rem)] w-[clamp(12.5rem,15vw,500%)] rounded-4xl text-shadow-md font-semibold text-[clamp(1.125rem,1vw,3rem)]"
           >
             Daftarkan Event
           </button>
         </motion.div>
       </section>
-      <section id="event" className="relative z-10 lg:mt-10 lg:mx-2">
+      <section id="event" className="relative z-10 md:mt-10 lg:mx-2">
         <div className="flex flex-col gap-2 items-center justify-center">
           <motion.h2
             initial="hidden"
@@ -219,31 +227,28 @@ export default function HomeClient() {
             className="keen-slider"
           >
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event1" />
+              <EventCard title="Event1" image="temp1.webp" />
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event2" />
+              <EventCard title="Event2" image="temp2.webp"/>
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event3" />
+              <EventCard title="Event3" image="temp3.webp"/>
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event4" />
+              <EventCard title="Event4" image="temp4.webp"/>
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event5" />
+              <EventCard title="Event5" image="temp5.webp"/>
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event6" />
+              <EventCard title="Event6" image="temp6.webp"/>
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event7" />
+              <EventCard title="Event7" image="temp7.webp"/>
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event8" />
-            </div>
-            <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event9" />
+              <EventCard title="Event8" image="temp8.webp"/>
             </div>
           </motion.div>
           {loaded && instanceRef.current && (
@@ -614,12 +619,12 @@ function Arrow(props: { left?: boolean; onClick: (e: any) => void }) {
       type="button"
       onClick={props.onClick}
       className={`
-        absolute flex shrink-0 top-1/2 z-20 -translate-y-1/2 lg:px-1 font-bold text-white/70 hover:text-white active:text-white 
-        transition-colors duration-100 active:duration-75 text-[clamp(5rem,10vw,120rem)] text-shadow-md
+        absolute flex shrink-0 top-1/2 z-20 -translate-y-1/2 py-10 md:py-2 md:px-10 lg:px-0 font-bold text-white/70 hover:text-white active:text-white bg-black/20 lg:bg-black/0 active:bg-black/30 lg:active:bg-black/0
+        transition-colors duration-100 active:duration-75 text-[clamp(5rem,6vw,12rem)] md:w-[5%] justify-center items-center text-shadow-md
       ${
         props.left
-          ? "-left-0.5 md:left-20 lg:-left-2 "
-          : "-right-0.5 md:right-20 lg:-right-2"
+          ? "-left-1 md:left-20 lg:-left-2 "
+          : "-right-1 pr-[2px] md:right-20 lg:-right-2"
       }`}
     >
       {props.left ? "❮" : "❯"}
