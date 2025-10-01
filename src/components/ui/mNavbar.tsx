@@ -67,7 +67,7 @@ export default function MobileSidebar() {
                 ✕
               </button>
             </div>
-            <ul className="flex flex-col gap-4 p-4 text-sm">
+            <ul className="flex flex-col p-4">
               <NavLink onNavigate={closeSidebar} />
             </ul>
           </aside>
