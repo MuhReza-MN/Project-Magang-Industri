@@ -153,7 +153,7 @@ export default function HomeClient() {
       <div className="absolute inset-y-0 left-0 w-[100%] md:w-[99.9%] -skew-x-60 origin-top-left bg-gradient-to-br from-[#0b1220] to-[#1a1f2e]" />
       <section
         id="hero"
-        className="relative z-10 min-h-[clamp(5.5rem,100vh,100rem)] flex flex-col items-center"
+        className="relative z-10 min-h-[clamp(5.5rem,100vh,150rem)] flex flex-col items-center"
       >
         <motion.div
           initial="hidden"
@@ -230,25 +230,25 @@ export default function HomeClient() {
               <EventCard title="Event1" image="temp1.webp" />
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event2" image="temp2.webp"/>
+              <EventCard title="Event2" image="temp2.webp" />
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event3" image="temp3.webp"/>
+              <EventCard title="Event3" image="temp3.webp" />
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event4" image="temp4.webp"/>
+              <EventCard title="Event4" image="temp4.webp" />
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event5" image="temp5.webp"/>
+              <EventCard title="Event5" image="temp5.webp" />
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event6" image="temp6.webp"/>
+              <EventCard title="Event6" image="temp6.webp" />
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event7" image="temp7.webp"/>
+              <EventCard title="Event7" image="temp7.webp" />
             </div>
             <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event8" image="temp8.webp"/>
+              <EventCard title="Event8" image="temp8.webp" />
             </div>
           </motion.div>
           {loaded && instanceRef.current && (
@@ -323,9 +323,9 @@ export default function HomeClient() {
       </section>
       <section
         id="about"
-        className="relative z-10 mt-10 py-4 bg-black/70 flex flex-col lg:flex-row basis-full px-[clamp(0.75rem,2vw,500rem)] sm:gap-5"
+        className="relative z-10 mt-10 py-4 bg-black/70 flex flex-col basis-full px-[clamp(0.75rem,2vw,500rem)]"
       >
-        <div className="flex flex-col gap-3 lg:w-[40%] pl-1 lg:pl-0">
+        <div className="flex flex-col gap-3 w-full">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -333,10 +333,10 @@ export default function HomeClient() {
             variants={flyVariants.up}
             className="flex flex-col gap-1"
           >
-            <h3 className="text-red-600 text-[clamp(1.875rem,3vw,6rem)] text-shadow-md text-center lg:text-start font-semibold">
+            <h3 className=" text-red-600 text-[clamp(1.875rem,3vw,6rem)] text-shadow-md text-center font-semibold">
               I N T R O D U C T I O N
             </h3>
-            <h2 className="text-shadow-md text-[clamp(1.875rem,2.5vw,6rem)] font-bold text-center lg:text-start">
+            <h2 className="text-shadow-md text-[clamp(1.875rem,2.5vw,6rem)] font-bold text-center md:text-start">
               APA ITU RQRE.ID ?
             </h2>
           </motion.div>
@@ -345,7 +345,7 @@ export default function HomeClient() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={flyVariants.up}
-            className="text-shadow-md text-[clamp(1rem,1.3vw,3rem)] font-medium text-balance text-justify pr-2 lg:pr-5 "
+            className="text-shadow-md text-[clamp(1rem,1.3vw,3rem)] font-medium text-balance text-justify px-3 lg:px-8 "
           >
             RQRE.ID adalah aplikasi yang dirancang untuk membantu Event
             Organizer dalam menyelenggarakan acara ekslusif bagi partisipan
@@ -355,7 +355,7 @@ export default function HomeClient() {
             yang melebihi kapasitas dapat diminimalisir, sehingga acara berjalan
             lebih aman dan tertata.
           </motion.p>
-          <div className="flex flex-col justify-center items-center lg:items-start gap-6 lg:gap-60">
+          <div className="flex justify-center items-center mb-6">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -369,71 +369,33 @@ export default function HomeClient() {
                 Daftarkan Event Anda
               </button>
             </motion.div>
-            <div className="flex flex-col items-center lg:items-start gap-2">
-              <motion.h3
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1, ease: "easeInOut" }}
-                className="text-red-600 text-[clamp(1.875rem,2.5vw,6rem)] text-shadow-md font-semibold tracking-widest"
-              >
-                CONTACT US
-              </motion.h3>
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-                variants={flyVariants.btn}
-                className="flex flex-col md:flex-row lg:flex-row gap-3 lg:gap-5 px-0 mb-4 lg:mb-0"
-              >
-                <div className="flex flex-row lg:flex-col md:gap-2 items-center justify-start lg:justify-center pl-2 lg:pl-0 bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 w-[clamp(15rem,8vw,150rem)] h-[clamp(4rem,8vw,50rem)] lg:w-[clamp(11.25rem,10vw,25rem)] lg:h-[clamp(11.25rem,10vw,25rem)]">
-                  <FaWhatsapp className="flex shrink-0 text-[clamp(3.125rem,7vw,10rem)] lg:text-[clamp(6.5rem,6vw,15.625rem)] text-white" />
-                  <div className="flex flex-col pl-2 gap-1 lg:text-center">
-                    <h3 className="font-extrabold tracking-widest text-[clamp(1.125rem,1vw,2.513rem)] text-shadow-md">
-                      WHATSAPP
-                    </h3>
-                    <h4 className="font-bold text-[clamp(1rem,1vw,2.5rem)] text-shadow-md">
-                      0800 1221 0200
-                    </h4>
-                  </div>
-                </div>
-                <div className="flex flex-row lg:flex-col md:gap-2 items-center justify-start lg:justify-center pl-2 lg:pl-0 bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 w-[clamp(15rem,8vw,150rem)] h-[clamp(4rem,8vw,50rem)] lg:w-[clamp(11.25rem,10vw,25rem)] lg:h-[clamp(11.25rem,10vw,25rem)]">
-                  <AiOutlineMail className="flex shrink-0 text-[clamp(3.125rem,7vw,10rem)] lg:text-[clamp(6.5rem,6vw,15.625rem)] text-white" />
-                  <div className="flex flex-col pl-2 gap-1 lg:text-center">
-                    <h3 className="font-extrabold tracking-widest text-[clamp(1.125rem,1vw,2.513rem)] text-shadow-md">
-                      EMAIL US
-                    </h3>
-                    <h4 className="font-bold text-[clamp(1rem,1vw,2.125rem)] text-shadow-md">
-                      rqre_id@gmail.com
-                    </h4>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
           </div>
         </div>
-        <div className="flex flex-col justify-center items-center gap-4 lg:gap-8 w-full md:w-[60%] lg:w-[60%] px-2 lg:px-0 md:ml-[20.5%] lg:ml-0">
-          <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
+        <div className="flex flex-col justify-center items-center gap-4 lg:gap-6 w-full">
+          <div className="flex flex-col gap-4 lg:gap-6 w-full md:w-[98%] 2xl:w-[80%]">
             <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.downD1}
-              className="flex flex-row lg:flex-col lg:gap-1 py-1 lg:py-0 items-center min-h-20 lg:min-h-[clamp(25rem,60vh,50rem)] w-full lg:w-[clamp(18rem,28vw,160rem)] bg-[#2d3751] rounded-2xl border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
+              className="flex flex-row py-1 items-center h-40 lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
             >
-              <BiScan className="flex shrink-0 text-[100px] lg:text-[clamp(8.75rem,12vw,18.75rem)] text-[#7489bf] lg:mt-2 pl-2 lg:pl-0" />
-              <div className="flex flex-col lg:gap-[clamp(0rem,2vw,1.2rem)] text-left lg:text-center h-full">
-                <h3 className="font-extrabold text-[clamp(1rem,1.6vw,3.75rem)] px-2 lg:px-[clamp(0rem,2vw,2.5rem)] whitespace-normal break-words lg:leading-[clamp(0.5rem,3vw,4.0625rem)]">
+              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[13%] aspect-square">
+                <BiScan className="flex shrink-0 w-[90%] h-[90%] text-[#7489bf]" />
+              </div>
+              <div className="flex flex-col gap-1.5 md:gap-[clamp(0rem,1vw,2rem)] text-left h-[90%] w-full">
+                <h3 className="font-extrabold text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
                   QR Code Verivication
                 </h3>
-                <h4 className="font-bold text-xs lg:text-[clamp(1rem,1vw,2.25rem)] text-balance text-justify lg:text-center px-1 pr-2 lg:pr-0 mx-[clamp(0rem,2vw,2rem)] lg:mx-4 ml-1 lg:ml-3">
+                <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
                   Sebuah media verifikasi pendaftar berupa Quick Response (QR)
                   code yang akan dipakai oleh pendaftar untuk memverifikasi diri
                   mereka sebagai partisipan valid.
                 </h4>
-                <div className="flex align-bottom items-end h-full lg:justify-center mb-1 lg:mb-[clamp(0.5rem,0.5vh,5rem)]">
+                <div className="flex align-bottom items-end h-full">
                   <button
                     type="button"
-                    className="flex items-end ml-2 lg:ml-[clamp(0.1rem,1vw,5rem)]  text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
+                    className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
                   >
                     Learn More{" "}
                     <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
@@ -446,22 +408,24 @@ export default function HomeClient() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.downD1}
-              className="flex flex-row lg:flex-col lg:gap-1 py-1 lg:py-0 items-center lg:items-center min-h-20 lg:min-h-[clamp(25rem,60vh,50rem)] w-full lg:w-[clamp(18rem,28vw,160rem)] bg-[#2d3751] rounded-2xl border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
+              className="flex flex-row py-1 items-center h-40 lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
             >
-              <IoTicketOutline className="flex shrink-0 text-[100px] lg:text-[clamp(8.75rem,11vw,16.75rem)] text-[#7489bf] lg:mt-3 lg:mb-3 pl-2 lg:pl-0" />
-              <div className="flex flex-col lg:gap-[clamp(0rem,2vw,1rem)] text-left lg:text-center h-full">
-                <h3 className="font-extrabold text-[clamp(1rem,1.6vw,3.75rem)] px-2 lg:px-[clamp(0rem,2vw,2.5rem)] whitespace-normal">
+              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[13%] aspect-square">
+                <IoTicketOutline className="flex shrink-0 w-[90%] h-[90%] text-[#7489bf]" />
+              </div>
+              <div className="flex flex-col gap-1.5 md:gap-[clamp(0rem,1vw,2rem)] text-left h-[90%] w-full">
+                <h3 className="font-extrabold text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
                   Digital Ticket
                 </h3>
-                <h4 className="font-bold text-xs lg:text-[clamp(1rem,1vw,2.25rem)] text-balance text-justify lg:text-center px-1 pr-2 lg:pr-0 mx-[clamp(0rem,2vw,2rem)] lg:mx-4 ml-1 lg:ml-3">
+                <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
                   RQRE.ID menyediakan ticket dari event, konser, lomba dan
                   lain-lain dalam bentuk digital yang akan dikirimkan langsung
                   melalui email anda yang terdaftar.
                 </h4>
-                <div className="flex align-bottom items-end h-full lg:justify-center mb-1 lg:mb-[clamp(0.5rem,0.5vh,5rem)]">
+                <div className="flex align-bottom items-end h-full ">
                   <button
                     type="button"
-                    className="flex items-end ml-2 lg:ml-[clamp(0.1rem,1vw,5rem)]  text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
+                    className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
                   >
                     Learn More{" "}
                     <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
@@ -470,30 +434,32 @@ export default function HomeClient() {
               </div>
             </motion.div>
           </div>
-          <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
+          <div className="flex flex-col gap-4 lg:gap-6 w-full md:w-[98%] 2xl:w-[80%]">
             <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.upD1}
-              className="flex flex-row lg:flex-col lg:gap-1 py-1 lg:py-0 items-center lg:items-center min-h-20 lg:min-h-[clamp(25rem,60vh,50rem)] w-full lg:w-[clamp(18rem,28vw,160rem)] bg-[#2d3751] rounded-2xl border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
+              className="flex flex-row py-1 items-center h-40 lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
             >
-              <AiOutlineQrcode className="flex shrink-0 text-[100px] lg:text-[clamp(8.75rem,12vw,18.75rem)] text-[#7489bf] lg:mt-2" />
-              <div className="flex flex-col lg:gap-[clamp(0rem,1vh,1rem)] text-left lg:text-center h-full">
-                <h3 className="font-extrabold text-[clamp(1rem,1.6vw,3.75rem)] px-2 lg:px-[clamp(0rem,4.5vw,5000rem)] whitespace-normal break-words leading-5 lg:lg:leading-[clamp(0.5rem,2vw,4.0625rem)]">
-                  Automatic Member{" "}
-                  <span className="whitespace-nowrap">QR-code Assign</span>
+              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[13%] aspect-square">
+                <AiOutlineQrcode className="flex shrink-0 w-[90%] h-[90%] text-[#7489bf]" />
+              </div>
+              <div className="flex flex-col gap-1.5 md:gap-[clamp(0rem,1vw,2rem)] text-left h-[90%] w-full">
+                <h3 className="font-extrabold text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
+                  Automatic QR-code{" "}
+                  <span className="whitespace-nowrap">Assigner for Member</span>
                 </h3>
-                <h4 className="font-bold text-xs lg:text-[clamp(1rem,1vw,2.25rem)] text-balance text-justify lg:text-center px-1 pr-2 lg:pr-0 mx-[clamp(0rem,2vw,2rem)] lg:mx-[clamp(0.875rem,1.5vw,2rem)] ml-1 lg:ml-3">
+                <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
                   RQRE.ID akan meng-generate kode QR dan meng-assign kode
                   tersebut ke pendaftar valid secara otomatis sehingga panitia
                   hanya perlu meng-scan QR penggunjung untuk memvalidasi stasus
                   mereka.
                 </h4>
-                <div className="flex align-bottom items-end h-full lg:justify-center mb-1 lg:mb-[clamp(0.5rem,0.5vh,5rem)]">
+                <div className="flex align-bottom items-end h-full">
                   <button
                     type="button"
-                    className="flex items-end ml-2 lg:ml-[clamp(0.1rem,1vw,5rem)]  text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
+                    className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
                   >
                     Learn More{" "}
                     <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
@@ -506,22 +472,24 @@ export default function HomeClient() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.upD1}
-              className="flex flex-row lg:flex-col lg:gap-[clamp(0rem,1vw,4rem)] py-1 lg:py-0 items-center lg:items-center min-h-20 lg:min-h-[clamp(25rem,60vh,50rem)]  w-full lg:w-[clamp(18rem,28vw,160rem)] bg-[#2d3751] rounded-2xl border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
+              className="flex flex-row py-1 items-center h-40 lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
             >
-              <VscGraph className="flex shrink-0 text-[100px] lg:text-[clamp(7.75rem,10vw,15.75rem)] text-[#7489bf] mt-2 lg:mt-8 pl-2 lg:pl-0" />
-              <div className="flex flex-col lg:gap-[clamp(0rem,1.5vw,1.5rem)] text-left lg:text-center h-full">
-                <h3 className="font-extrabold text-[clamp(1rem,1.6vw,3.75rem)] px-2 lg:px-[clamp(0rem,2vw,2.5rem)] whitespace-normal text-shadow-lg shadow-white">
+              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[13%] aspect-square pt-[1%]">
+                <VscGraph className="flex shrink-0 w-[90%] h-[90%] text-[#7489bf]" />
+              </div>
+              <div className="flex flex-col gap-1.5 md:gap-[clamp(0rem,1vw,2rem)] text-left h-[90%] w-full">
+                <h3 className="font-extrabold text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
                   Visual Report
                 </h3>
-                <h4 className="font-bold text-xs lg:text-[clamp(1rem,1vw,2.25rem)] text-balance text-justify lg:text-center px-1 pr-2 lg:pr-0 mx-[clamp(0rem,2vw,2rem)] lg:mx-[clamp(0.875rem,1vw,2rem)] ml-1 lg:ml-3">
+                <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
                   RQRE.ID menyediakan grafik visual yang akan memperlihatkan
                   laporan jumlah peserta, pengunjung yang hadir, dan beragam
                   data relevan lainnya.
                 </h4>
-                <div className="flex align-bottom items-end h-full lg:justify-center mb-1 lg:mb-[clamp(0.5rem,0.5vh,5rem)]">
+                <div className="flex align-bottom items-end h-full">
                   <button
                     type="button"
-                    className="flex items-end ml-2 lg:ml-[clamp(0.1rem,1vw,5rem)]  text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
+                    className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
                   >
                     Learn More{" "}
                     <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />

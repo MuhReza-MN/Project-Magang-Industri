@@ -61,14 +61,14 @@ export default function NavLink({ onNavigate }: NavLinkProps) {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        const mostVisible = entries.reduce((prev, curr) => 
+          curr.intersectionRatio > prev.intersectionRatio ? curr : prev
+        );
 
-        if (visible) setCurrSect(visible.target.id);
+        if (mostVisible.isIntersecting) setCurrSect(mostVisible.target.id);
       },
       {
-        rootMargin: `-${headerHeight}px 0px -40% 0px`,
+        rootMargin: `-${headerHeight}px 0px 0px 0px`,
         threshold: [0.25, 0.5, 0.75],
       },
     );
