@@ -8,12 +8,14 @@ import { IoTicketOutline } from "react-icons/io5";
 import { AiOutlineQrcode, AiOutlineMail } from "react-icons/ai";
 import { VscGraph } from "react-icons/vsc";
 import { FaArrowRight, FaWhatsapp } from "react-icons/fa6";
+import { FaAngleRight } from 'react-icons/fa';
 import EventCard from "@/components/ui/card";
 import "keen-slider/keen-slider.min.css";
 
 export default function HomeClient() {
   const [currSlide, setCurrSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const [isExpanded, setExpanded] = useState(false);
 
   const handleScroll = (id: string) => {
     const el = document.getElementById(id);
@@ -345,7 +347,7 @@ export default function HomeClient() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={flyVariants.up}
-            className="text-shadow-md text-[clamp(1rem,1.3vw,3rem)] font-medium text-balance text-justify px-3 lg:px-8 "
+            className="text-shadow-md text-[clamp(1rem,1.3vw,3rem)] font-medium text-pretty text-justify px-3 lg:px-8 "
           >
             RQRE.ID adalah aplikasi yang dirancang untuk membantu Event
             Organizer dalam menyelenggarakan acara ekslusif bagi partisipan
@@ -378,21 +380,30 @@ export default function HomeClient() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.downD1}
-              className="flex flex-row py-1 items-center h-40 lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
+              className="flex flex-row py-1 items-center h-fit lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
             >
-              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[13%] aspect-square">
+              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[25%] md:w-[13%] aspect-square">
                 <BiScan className="flex shrink-0 w-[90%] h-[90%] text-[#7489bf]" />
               </div>
               <div className="flex flex-col gap-1.5 md:gap-[clamp(0rem,1vw,2rem)] text-left h-[90%] w-full">
-                <h3 className="font-extrabold text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
-                  QR Code Verivication
-                </h3>
+                <div className="flex w-full h-fit justify-center items-center">
+                  <h3 className="font-extrabold w-full text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
+                    QR Code Verivication
+                  </h3>
+                  <motion.div 
+                    onClick={() => setExpanded(!isExpanded)}
+                    animate={{ rotate: isExpanded ? 90 : 0 }}
+                    transition={{ duration: 0.2 , ease: "easeInOut" }}
+                    className="hidden md:flex mr-2 mt-1 md:mt-0 w-fit justify-center items-center">
+                    <FaAngleRight className="flex shrink-0 size-[clamp(2rem,3vw,10rem)] text-[#5ce1e6]"/>
+                  </motion.div>
+                </div>
                 <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
                   Sebuah media verifikasi pendaftar berupa Quick Response (QR)
                   code yang akan dipakai oleh pendaftar untuk memverifikasi diri
                   mereka sebagai partisipan valid.
                 </h4>
-                <div className="flex align-bottom items-end h-full">
+                <div className="flex shrink-0 align-bottom items-end h-[20%]">
                   <button
                     type="button"
                     className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
@@ -408,9 +419,9 @@ export default function HomeClient() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.downD1}
-              className="flex flex-row py-1 items-center h-40 lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
+              className="flex flex-row py-1 items-center h-fit lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
             >
-              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[13%] aspect-square">
+              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[25%] md:w-[13%] aspect-square">
                 <IoTicketOutline className="flex shrink-0 w-[90%] h-[90%] text-[#7489bf]" />
               </div>
               <div className="flex flex-col gap-1.5 md:gap-[clamp(0rem,1vw,2rem)] text-left h-[90%] w-full">
@@ -422,7 +433,7 @@ export default function HomeClient() {
                   lain-lain dalam bentuk digital yang akan dikirimkan langsung
                   melalui email anda yang terdaftar.
                 </h4>
-                <div className="flex align-bottom items-end h-full ">
+                <div className="flex shrink-0 align-bottom items-end h-[20%]">
                   <button
                     type="button"
                     className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
@@ -440,9 +451,9 @@ export default function HomeClient() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.upD1}
-              className="flex flex-row py-1 items-center h-40 lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
+              className="flex flex-row py-1 items-center h-fit lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
             >
-              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[13%] aspect-square">
+              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[25%] md:w-[13%] aspect-square">
                 <AiOutlineQrcode className="flex shrink-0 w-[90%] h-[90%] text-[#7489bf]" />
               </div>
               <div className="flex flex-col gap-1.5 md:gap-[clamp(0rem,1vw,2rem)] text-left h-[90%] w-full">
@@ -456,7 +467,7 @@ export default function HomeClient() {
                   hanya perlu meng-scan QR penggunjung untuk memvalidasi stasus
                   mereka.
                 </h4>
-                <div className="flex align-bottom items-end h-full">
+                <div className="flex shrink-0 align-bottom items-end h-[20%]">
                   <button
                     type="button"
                     className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
@@ -472,9 +483,9 @@ export default function HomeClient() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.upD1}
-              className="flex flex-row py-1 items-center h-40 lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
+              className="flex flex-row py-1 items-center h-fit lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
             >
-              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[13%] aspect-square pt-[1%]">
+              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[25%] md:w-[13%] aspect-square pt-[1%]">
                 <VscGraph className="flex shrink-0 w-[90%] h-[90%] text-[#7489bf]" />
               </div>
               <div className="flex flex-col gap-1.5 md:gap-[clamp(0rem,1vw,2rem)] text-left h-[90%] w-full">
@@ -486,7 +497,7 @@ export default function HomeClient() {
                   laporan jumlah peserta, pengunjung yang hadir, dan beragam
                   data relevan lainnya.
                 </h4>
-                <div className="flex align-bottom items-end h-full">
+                <div className="flex shrink-0 align-bottom items-end h-[20%]">
                   <button
                     type="button"
                     className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
@@ -538,7 +549,7 @@ export default function HomeClient() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.upD1}
-              className="pl-4 pr-5 lg:pl-5 lg:pr-10 text-balance text-justify text-[clamp(1rem,1vw,3.25rem)]"
+              className="pl-4 pr-5 lg:pl-5 lg:pr-10 text-pretty text-justify text-[clamp(1rem,1vw,3.25rem)]"
             >
               RQRI.ID adalah aplikasi yang didirikan untuk membantu event yang
               bersifat Member-Only dalam memastikan partisipan yang memasuki
@@ -560,7 +571,7 @@ export default function HomeClient() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.upD1}
-              className="pl-4 pr-5 lg:pl-5 lg:pr-10 text-balance text-justify text-[clamp(1rem,1vw,3.25rem)]"
+              className="pl-4 pr-5 lg:pl-5 lg:pr-10 text-pretty text-justify text-[clamp(1rem,1vw,3.25rem)]"
             >
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras
               laoreet iaculis maximus. Nam tristique diam quis odio scelerisque
