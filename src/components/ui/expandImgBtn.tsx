@@ -78,7 +78,7 @@ export default function ExpandImage({ imageName, image }: ExpandImgProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 50 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
-                className="relative w-full max-h-screen flex flex-col items-center justify-center overflow-y-auto p-4"
+                className="relative w-[98%] md:max-h-screen flex flex-col items-center justify-center overflow-y-auto overflow-x-hidden p-4"
               >
                 <div className="flex flex-col items-center justify-center bg-white rounded-[clamp(0.5rem,1vw,1.5rem)] p-[clamp(0.01rem,0.5vw,1.5rem)] shadow-lg z-50 mt-[clamp(0.01rem,1.2vw,200rem)] w-[105%] md:w-[97%] relative">
                   <div className="relative flex items-center justify-center rounded-[clamp(0.5rem,1vw,1.5rem)] w-full h-[80vh] md:h-[clamp(10rem,41vw,200rem)] border-4 border-gray-100/70 overflow-hidden bg-gray-100/70 ">

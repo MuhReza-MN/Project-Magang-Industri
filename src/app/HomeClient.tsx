@@ -1,21 +1,30 @@
 "use client";
 
 import { useKeenSlider } from "keen-slider/react";
-import { useState } from "react";
-import { easeInOut, motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { easeInOut, motion, AnimatePresence } from "framer-motion";
 import { BiScan } from "react-icons/bi";
 import { IoTicketOutline } from "react-icons/io5";
 import { AiOutlineQrcode, AiOutlineMail } from "react-icons/ai";
 import { VscGraph } from "react-icons/vsc";
 import { FaArrowRight, FaWhatsapp } from "react-icons/fa6";
-import { FaAngleRight } from 'react-icons/fa';
+import { FaAngleRight, FaEllipsisH } from "react-icons/fa";
 import EventCard from "@/components/ui/card";
 import "keen-slider/keen-slider.min.css";
 
 export default function HomeClient() {
   const [currSlide, setCurrSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
-  const [isExpanded, setExpanded] = useState(false);
+  const [expandedCards, setExpandedCards] = useState({
+    scan: false,
+    ticket: false,
+    qr: false,
+    graph: false,
+  });
+
+  const toggleCard = (key: keyof typeof expandedCards) => {
+    setExpandedCards((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   const handleScroll = (id: string) => {
     const el = document.getElementById(id);
@@ -376,73 +385,149 @@ export default function HomeClient() {
         <div className="flex flex-col justify-center items-center gap-4 lg:gap-6 w-full">
           <div className="flex flex-col gap-4 lg:gap-6 w-full md:w-[98%] 2xl:w-[80%]">
             <motion.div
+              onClick={() => toggleCard("scan")}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.downD1}
-              className="flex flex-row py-1 items-center h-fit lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
+              className="flex flex-row py-1 items-center lg:items-start h-fit w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
             >
-              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[25%] md:w-[13%] aspect-square">
-                <BiScan className="flex shrink-0 w-[90%] h-[90%] text-[#7489bf]" />
-              </div>
-              <div className="flex flex-col gap-1.5 md:gap-[clamp(0rem,1vw,2rem)] text-left h-[90%] w-full">
-                <div className="flex w-full h-fit justify-center items-center">
+              <motion.div
+                key="icon"
+                animate={{
+                  opacity: expandedCards.scan ? 1 : 0,
+                  y: expandedCards.scan ? 0 : -10,
+                  height: expandedCards.scan ? "auto" : 0,
+                }}
+                transition={{ layout: { duration: 0, ease: "linear" } }}
+                className={`flex justify-center items-center overflow-hidden aspect-square
+                  ${expandedCards.scan ? "w-[25%] md:w-[13%]" : "w-0"}
+                `}
+              >
+                <BiScan className="flex w-[90%] h-[90%] text-[#7489bf]" />
+              </motion.div>
+              <motion.div
+                layout
+                transition={{ layout: { duration: 0.25, ease: "linear" } }}
+                className="flex flex-col text-left w-full"
+              >
+                <div className="flex w-full h-fit justify-center items-center my-1 md:my-[clamp(0.25rem,0.5vw,1rem)]">
                   <h3 className="font-extrabold w-full text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
-                    QR Code Verivication
+                    QR Code Verification
                   </h3>
-                  <motion.div 
-                    onClick={() => setExpanded(!isExpanded)}
-                    animate={{ rotate: isExpanded ? 90 : 0 }}
-                    transition={{ duration: 0.2 , ease: "easeInOut" }}
-                    className="hidden md:flex mr-2 mt-1 md:mt-0 w-fit justify-center items-center">
-                    <FaAngleRight className="flex shrink-0 size-[clamp(2rem,3vw,10rem)] text-[#5ce1e6]"/>
+                  <motion.div
+                    animate={{ rotate: expandedCards.scan ? 90 : 0 }}
+                    transition={{ duration: 0.25, ease: [0.45, 0, 0.55, 1] }}
+                    className="flex mr-[clamp(0.25rem,0.5vw,1rem)] mt-1 md:mt-0 w-fit justify-center items-center rounded-full hover:brightness-90 active:brightness-90 transition-colors duration-200 active:duration-25"
+                  >
+                    <FaAngleRight className="flex shrink-0 size-[clamp(1.5rem,3vw,10rem)] text-[#5ce1e6]" />
                   </motion.div>
                 </div>
-                <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
-                  Sebuah media verifikasi pendaftar berupa Quick Response (QR)
-                  code yang akan dipakai oleh pendaftar untuk memverifikasi diri
-                  mereka sebagai partisipan valid.
-                </h4>
-                <div className="flex shrink-0 align-bottom items-end h-[20%]">
-                  <button
-                    type="button"
-                    className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
-                  >
-                    Learn More{" "}
-                    <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
-                  </button>
-                </div>
-              </div>
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: expandedCards.scan ? "auto" : 0,
+                    opacity: expandedCards.scan ? 1 : 0,
+                  }}
+                  transition={{
+                    duration: expandedCards.scan ? 0.5 : 0.35,
+                    ease: expandedCards.scan
+                      ? [0.25, 0.1, 0.25, 1]
+                      : [0.55, 0.05, 0.55, 0.95],
+                  }}
+                  className="overflow-hidden"
+                >
+                  <div className=" flex flex-col gap-[clamp(1rem,1vw,3.5rem)] mt-1">
+                    <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
+                      Sebuah media verifikasi pendaftar berupa Quick Response
+                      (QR) code yang akan dipakai oleh pendaftar untuk
+                      memverifikasi diri mereka sebagai partisipan valid.
+                    </h4>
+                    <div className="flex shrink-0 align-bottom items-end h-[20%]">
+                      <button
+                        type="button"
+                        className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
+                      >
+                        Learn More{" "}
+                        <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
             </motion.div>
             <motion.div
+              onClick={() => toggleCard("ticket")}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.downD1}
-              className="flex flex-row py-1 items-center h-fit lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
+              className="flex flex-row py-1 items-center lg:items-start h-fit w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
             >
-              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[25%] md:w-[13%] aspect-square">
-                <IoTicketOutline className="flex shrink-0 w-[90%] h-[90%] text-[#7489bf]" />
-              </div>
-              <div className="flex flex-col gap-1.5 md:gap-[clamp(0rem,1vw,2rem)] text-left h-[90%] w-full">
-                <h3 className="font-extrabold text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
-                  Digital Ticket
-                </h3>
-                <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
-                  RQRE.ID menyediakan ticket dari event, konser, lomba dan
-                  lain-lain dalam bentuk digital yang akan dikirimkan langsung
-                  melalui email anda yang terdaftar.
-                </h4>
-                <div className="flex shrink-0 align-bottom items-end h-[20%]">
-                  <button
-                    type="button"
-                    className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
+              <motion.div
+                key="icon"
+                animate={{
+                  opacity: expandedCards.ticket ? 1 : 0,
+                  y: expandedCards.ticket ? 0 : -10,
+                  height: expandedCards.ticket ? "auto" : 0,
+                }}
+                transition={{ layout: { duration: 0, ease: "linear" } }}
+                className={`flex justify-center items-center overflow-hidden aspect-square
+                  ${expandedCards.ticket ? "w-[25%] md:w-[13%]" : "w-0"}
+                `}
+              >
+                <IoTicketOutline className="flex w-[90%] h-[90%] text-[#7489bf]" />
+              </motion.div>
+
+              <motion.div
+                layout
+                transition={{ layout: { duration: 0.25, ease: "linear" } }}
+                className="flex flex-col text-left w-full"
+              >
+                <div className="flex w-full h-fit justify-center items-center my-1 md:my-[clamp(0.25rem,0.5vw,1rem)]">
+                  <h3 className="font-extrabold w-full text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
+                    Digital Ticket
+                  </h3>
+                  <motion.div
+                    animate={{ rotate: expandedCards.ticket ? 90 : 0 }}
+                    transition={{ duration: 0.25, ease: [0.45, 0, 0.55, 1] }}
+                    className="flex mr-[clamp(0.25rem,0.5vw,1rem)] mt-1 md:mt-0 w-fit justify-center items-center rounded-full hover:brightness-90 active:brightness-90 transition-colors duration-200 active:duration-25"
                   >
-                    Learn More{" "}
-                    <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
-                  </button>
+                    <FaAngleRight className="flex shrink-0 size-[clamp(1.5rem,3vw,10rem)] text-[#5ce1e6]" />
+                  </motion.div>
                 </div>
-              </div>
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: expandedCards.ticket ? "auto" : 0,
+                    opacity: expandedCards.ticket ? 1 : 0,
+                  }}
+                  transition={{
+                    duration: expandedCards.ticket ? 0.5 : 0.35,
+                    ease: expandedCards.ticket
+                      ? [0.25, 0.1, 0.25, 1]
+                      : [0.55, 0.05, 0.55, 0.95],
+                  }}
+                  className="overflow-hidden"
+                >
+                  <div className=" flex flex-col gap-[clamp(1rem,1vw,3.5rem)] mt-1">
+                    <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
+                      RQRE.ID menyediakan ticket dari event, konser, lomba dan
+                      lain-lain dalam bentuk digital yang akan dikirimkan
+                      langsung melalui email anda yang terdaftar.
+                    </h4>
+                    <div className="flex shrink-0 align-bottom items-end h-[20%]">
+                      <button
+                        type="button"
+                        className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
+                      >
+                        Learn More{" "}
+                        <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
             </motion.div>
           </div>
           <div className="flex flex-col gap-4 lg:gap-6 w-full md:w-[98%] 2xl:w-[80%]">
