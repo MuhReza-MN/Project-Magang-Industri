@@ -1,16 +1,57 @@
 "use client";
 
 import { useKeenSlider } from "keen-slider/react";
-import { useState, useRef, useEffect } from "react";
-import { easeInOut, motion, AnimatePresence } from "framer-motion";
+import React, {
+  useState,
+  useRef,
+  useLayoutEffect,
+  useMemo,
+  useCallback,
+  useEffect,
+} from "react";
+import { easeInOut, motion, useReducedMotion } from "framer-motion";
+import type { IconType } from "react-icons";
 import { BiScan } from "react-icons/bi";
 import { IoTicketOutline } from "react-icons/io5";
 import { AiOutlineQrcode, AiOutlineMail } from "react-icons/ai";
 import { VscGraph } from "react-icons/vsc";
 import { FaArrowRight, FaWhatsapp } from "react-icons/fa6";
-import { FaAngleRight, FaEllipsisH } from "react-icons/fa";
+import { FaAngleRight } from "react-icons/fa";
 import EventCard from "@/components/ui/card";
 import "keen-slider/keen-slider.min.css";
+
+function useThrottledResizeObserver(
+  callback: () => void,
+  selector = ".card",
+  delay = 150,
+) {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const observerRef = useRef<ResizeObserver | null>(null);
+
+  const throttled = useCallback(() => {
+    if (timeoutRef.current) return;
+    timeoutRef.current = setTimeout(() => {
+      callback();
+      timeoutRef.current = null;
+    }, delay);
+  }, [callback]);
+
+  useEffect(() => {
+    const elements = document.querySelectorAll(selector);
+    if (!elements.length) return;
+    const observer = new ResizeObserver(throttled);
+    observerRef.current = observer;
+    elements.forEach((el) => observer.observe(el));
+
+    return () => {
+      observer.disconnect();
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [selector, throttled]);
+  return {
+    disconnect: () => observerRef.current?.disconnect(),
+  };
+}
 
 export default function HomeClient() {
   const [currSlide, setCurrSlide] = useState(0);
@@ -21,6 +62,174 @@ export default function HomeClient() {
     qr: false,
     graph: false,
   });
+
+  type CardKey = "scan" | "ticket" | "qr" | "graph";
+  const defTrans = { duration: 0.55, ease: [0.25, 0.1, 0.25, 1] };
+  const arrowTrans = { duration: 0.25, ease: [0.45, 0, 0.55, 1] };
+  const cards = useMemo(
+    () => [
+      {
+        id: "scan" as CardKey,
+        title: "QR Code Verification",
+        Icon: BiScan as IconType,
+        desc: "Sebuah media verifikasi pendaftar berupa Quick Response (QR) code yang akan dipakai oleh pendaftar untuk memverifikasi diri mereka sebagai partisipan valid.",
+      },
+      {
+        id: "ticket" as CardKey,
+        title: "Digital Ticket",
+        Icon: IoTicketOutline as IconType,
+        desc: "RQRE.ID menyediakan ticket dari event, konser, lomba dan lain-lain dalam bentuk digital yang akan dikirimkan langsung melalui email anda yang terdaftar.",
+      },
+      {
+        id: "qr" as CardKey,
+        title: "Automatic QR-code",
+        titleBreak: "Assigner for Member",
+        Icon: AiOutlineQrcode as IconType,
+        desc: "RQRE.ID akan meng-generate kode QR dan meng-assign kode tersebut ke pendaftar valid secara otomatis sehingga panitia hanya perlu meng-scan QR penggunjung untuk memvalidasi stasus mereka.",
+      },
+      {
+        id: "graph" as CardKey,
+        title: "Visual Report",
+        Icon: VscGraph as IconType,
+        desc: "RQRE.ID menyediakan grafik visual yang akan memperlihatkan laporan jumlah peserta, pengunjung yang hadir, dan beragam data relevan lainnya.",
+      },
+    ],
+    [],
+  );
+
+  const InfoCard = useMemo(() => {
+    return React.memo(function InfoCard({
+      id,
+      title,
+      titleBreak,
+      Icon,
+      desc,
+      expanded,
+      onToggle,
+    }: {
+      id: CardKey;
+      title: string;
+      titleBreak?: string;
+      Icon: IconType;
+      desc: string;
+      expanded: boolean;
+      onToggle: () => void;
+    }) {
+      const contentRef = useRef<HTMLDivElement | null>(null);
+      const [contentH, setContentH] = useState<number>(0);
+      const prefersReduced = useReducedMotion();
+
+      useLayoutEffect(() => {
+        const el = contentRef.current;
+        if (!el) return;
+        const update = () => {
+          setContentH(el.scrollHeight);
+        };
+        update();
+        const ro = new ResizeObserver(update);
+        ro.observe(el);
+        window.addEventListener("resize", update);
+        return () => {
+          ro.disconnect();
+          window.removeEventListener("resize", update);
+        };
+      }, []);
+
+      const updateLayout = useCallback(() => {
+        const el = contentRef.current;
+        if (expanded && el) {
+          setContentH(el.scrollHeight);
+        }
+      }, [expanded]);
+
+      useThrottledResizeObserver(updateLayout, ".card", 150);
+
+      const variant = ["scan", "ticket"].includes(id)
+        ? flyVariants.downD1
+        : flyVariants.upD1;
+
+      return (
+        <motion.div
+          onClick={onToggle}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={variant}
+          className="card flex flex-row py-1 items-center h-fit w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.25rem,0.5vw,1.25rem)] border-[#5ce1e6]"
+        >
+          <motion.div
+            aria-hidden={!expanded}
+            initial={false}
+            animate={{
+              opacity: expanded ? 1 : 0,
+              y: expanded ? 0 : -10,
+              height: expanded ? "auto" : 0,
+            }}
+            transition={{ layout: { duration: 0, ease: "linear" } }}
+            className={`flex justify-center items-center overflow-hidden aspect-square
+              ${expanded ? "w-[25%] md:w-[13%]" : "w-[5%]"}
+              ${id === "graph" ? "pt-[1%]" : ""}
+            `}
+          >
+            <Icon className="w-[90%] h-[90%] text-[#7489bf]" />
+          </motion.div>
+          <motion.div
+            layout
+            transition={{ layout: { duration: 0.25, ease: "linear" } }}
+            className="flex flex-col text-left w-full"
+          >
+            <div className="flex w-full h-fit justify-center items-center my-1 md:my-[clamp(0.25rem,0.5vw,1rem)]">
+              <h3 className="font-extrabold w-full text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
+                {title}
+                {titleBreak && (
+                  <>
+                    {" "}
+                    <span className="whitespace-nowrap">{titleBreak}</span>
+                  </>
+                )}
+              </h3>
+              <motion.div
+                animate={{ rotate: expanded ? 90 : 0 }}
+                transition={arrowTrans}
+                className="flex mr-[clamp(0.25rem,0.5vw,1rem)] mt-1 md:mt-0 w-fit justify-center items-center rounded-full hover:brightness-90 active:brightness-90 transition-colors duration-200 active:duration-25"
+              >
+                <FaAngleRight className="flex shrink-0 size-[clamp(1.5rem,3vw,10rem)] text-[#5ce1e6]" />
+              </motion.div>
+            </div>
+            <motion.div
+              layout
+              initial={false}
+              animate={{
+                height: expanded ? contentH : 0,
+                opacity: expanded ? 1 : 0,
+              }}
+              transition={prefersReduced ? { duration: 0 } : defTrans}
+              className="overflow-hidden"
+            >
+              <motion.div
+                layout
+                ref={contentRef}
+                className=" flex flex-col gap-[clamp(0.5rem,1vw,3.5rem)] mt-1"
+              >
+                <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
+                  {desc}
+                </h4>
+                <div className="flex shrink-0 align-bottom items-end h-[20%] pb-[2%] md:pb-[1%]">
+                  <button
+                    type="button"
+                    className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
+                  >
+                    Learn More{" "}
+                    <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      );
+    });
+  }, []);
 
   const toggleCard = (key: keyof typeof expandedCards) => {
     setExpandedCards((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -162,6 +371,14 @@ export default function HomeClient() {
     <div className="min-h-screen contain-inline-size">
       <div className="absolute inset-0  bg-gradient-to-r from-[#7c3aed] to-[#7dd3fc]" />
       <div className="absolute inset-y-0 left-0 w-[100%] md:w-[99.9%] -skew-x-60 origin-top-left bg-gradient-to-br from-[#0b1220] to-[#1a1f2e]" />
+      <div
+        className="fixed bottom-6 right-6 md:bottom-4 md:right-4 z-50 w-[clamp(3rem,4vw,8rem)] h-[clamp(3rem,4vw,8rem)]
+          flex items-center justify-center rounded-full bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] shadow-lg hover:shadow-2xl
+          transition-all duration-300 ease-out hover:scale-110 active:scale-110 focus:scale-105 cursor-pointer 
+        "
+      >
+        <FaWhatsapp className="text-white h-[75%] w-[75%]"/>
+      </div>
       <section
         id="hero"
         className="relative z-10 min-h-[clamp(5.5rem,100vh,150rem)] flex flex-col items-center"
@@ -334,7 +551,7 @@ export default function HomeClient() {
       </section>
       <section
         id="about"
-        className="relative z-10 mt-10 py-4 bg-black/70 flex flex-col basis-full px-[clamp(0.75rem,2vw,500rem)]"
+        className="relative z-10 mt-10 py-4 bg-black/70 flex flex-col items-center basis-full px-[clamp(0.75rem,2vw,500rem)]"
       >
         <div className="flex flex-col gap-3 w-full">
           <motion.div
@@ -382,218 +599,19 @@ export default function HomeClient() {
             </motion.div>
           </div>
         </div>
-        <div className="flex flex-col justify-center items-center gap-4 lg:gap-6 w-full">
-          <div className="flex flex-col gap-4 lg:gap-6 w-full md:w-[98%] 2xl:w-[80%]">
-            <motion.div
-              onClick={() => toggleCard("scan")}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={flyVariants.downD1}
-              className="flex flex-row py-1 items-center lg:items-start h-fit w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
-            >
-              <motion.div
-                key="icon"
-                animate={{
-                  opacity: expandedCards.scan ? 1 : 0,
-                  y: expandedCards.scan ? 0 : -10,
-                  height: expandedCards.scan ? "auto" : 0,
-                }}
-                transition={{ layout: { duration: 0, ease: "linear" } }}
-                className={`flex justify-center items-center overflow-hidden aspect-square
-                  ${expandedCards.scan ? "w-[25%] md:w-[13%]" : "w-0"}
-                `}
-              >
-                <BiScan className="flex w-[90%] h-[90%] text-[#7489bf]" />
-              </motion.div>
-              <motion.div
-                layout
-                transition={{ layout: { duration: 0.25, ease: "linear" } }}
-                className="flex flex-col text-left w-full"
-              >
-                <div className="flex w-full h-fit justify-center items-center my-1 md:my-[clamp(0.25rem,0.5vw,1rem)]">
-                  <h3 className="font-extrabold w-full text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
-                    QR Code Verification
-                  </h3>
-                  <motion.div
-                    animate={{ rotate: expandedCards.scan ? 90 : 0 }}
-                    transition={{ duration: 0.25, ease: [0.45, 0, 0.55, 1] }}
-                    className="flex mr-[clamp(0.25rem,0.5vw,1rem)] mt-1 md:mt-0 w-fit justify-center items-center rounded-full hover:brightness-90 active:brightness-90 transition-colors duration-200 active:duration-25"
-                  >
-                    <FaAngleRight className="flex shrink-0 size-[clamp(1.5rem,3vw,10rem)] text-[#5ce1e6]" />
-                  </motion.div>
-                </div>
-                <motion.div
-                  initial={false}
-                  animate={{
-                    height: expandedCards.scan ? "auto" : 0,
-                    opacity: expandedCards.scan ? 1 : 0,
-                  }}
-                  transition={{
-                    duration: expandedCards.scan ? 0.5 : 0.35,
-                    ease: expandedCards.scan
-                      ? [0.25, 0.1, 0.25, 1]
-                      : [0.55, 0.05, 0.55, 0.95],
-                  }}
-                  className="overflow-hidden"
-                >
-                  <div className=" flex flex-col gap-[clamp(1rem,1vw,3.5rem)] mt-1">
-                    <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
-                      Sebuah media verifikasi pendaftar berupa Quick Response
-                      (QR) code yang akan dipakai oleh pendaftar untuk
-                      memverifikasi diri mereka sebagai partisipan valid.
-                    </h4>
-                    <div className="flex shrink-0 align-bottom items-end h-[20%]">
-                      <button
-                        type="button"
-                        className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
-                      >
-                        Learn More{" "}
-                        <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              </motion.div>
-            </motion.div>
-            <motion.div
-              onClick={() => toggleCard("ticket")}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={flyVariants.downD1}
-              className="flex flex-row py-1 items-center lg:items-start h-fit w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
-            >
-              <motion.div
-                key="icon"
-                animate={{
-                  opacity: expandedCards.ticket ? 1 : 0,
-                  y: expandedCards.ticket ? 0 : -10,
-                  height: expandedCards.ticket ? "auto" : 0,
-                }}
-                transition={{ layout: { duration: 0, ease: "linear" } }}
-                className={`flex justify-center items-center overflow-hidden aspect-square
-                  ${expandedCards.ticket ? "w-[25%] md:w-[13%]" : "w-0"}
-                `}
-              >
-                <IoTicketOutline className="flex w-[90%] h-[90%] text-[#7489bf]" />
-              </motion.div>
-
-              <motion.div
-                layout
-                transition={{ layout: { duration: 0.25, ease: "linear" } }}
-                className="flex flex-col text-left w-full"
-              >
-                <div className="flex w-full h-fit justify-center items-center my-1 md:my-[clamp(0.25rem,0.5vw,1rem)]">
-                  <h3 className="font-extrabold w-full text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
-                    Digital Ticket
-                  </h3>
-                  <motion.div
-                    animate={{ rotate: expandedCards.ticket ? 90 : 0 }}
-                    transition={{ duration: 0.25, ease: [0.45, 0, 0.55, 1] }}
-                    className="flex mr-[clamp(0.25rem,0.5vw,1rem)] mt-1 md:mt-0 w-fit justify-center items-center rounded-full hover:brightness-90 active:brightness-90 transition-colors duration-200 active:duration-25"
-                  >
-                    <FaAngleRight className="flex shrink-0 size-[clamp(1.5rem,3vw,10rem)] text-[#5ce1e6]" />
-                  </motion.div>
-                </div>
-                <motion.div
-                  initial={false}
-                  animate={{
-                    height: expandedCards.ticket ? "auto" : 0,
-                    opacity: expandedCards.ticket ? 1 : 0,
-                  }}
-                  transition={{
-                    duration: expandedCards.ticket ? 0.5 : 0.35,
-                    ease: expandedCards.ticket
-                      ? [0.25, 0.1, 0.25, 1]
-                      : [0.55, 0.05, 0.55, 0.95],
-                  }}
-                  className="overflow-hidden"
-                >
-                  <div className=" flex flex-col gap-[clamp(1rem,1vw,3.5rem)] mt-1">
-                    <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
-                      RQRE.ID menyediakan ticket dari event, konser, lomba dan
-                      lain-lain dalam bentuk digital yang akan dikirimkan
-                      langsung melalui email anda yang terdaftar.
-                    </h4>
-                    <div className="flex shrink-0 align-bottom items-end h-[20%]">
-                      <button
-                        type="button"
-                        className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
-                      >
-                        Learn More{" "}
-                        <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              </motion.div>
-            </motion.div>
-          </div>
-          <div className="flex flex-col gap-4 lg:gap-6 w-full md:w-[98%] 2xl:w-[80%]">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={flyVariants.upD1}
-              className="flex flex-row py-1 items-center h-fit lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
-            >
-              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[25%] md:w-[13%] aspect-square">
-                <AiOutlineQrcode className="flex shrink-0 w-[90%] h-[90%] text-[#7489bf]" />
-              </div>
-              <div className="flex flex-col gap-1.5 md:gap-[clamp(0rem,1vw,2rem)] text-left h-[90%] w-full">
-                <h3 className="font-extrabold text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
-                  Automatic QR-code{" "}
-                  <span className="whitespace-nowrap">Assigner for Member</span>
-                </h3>
-                <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
-                  RQRE.ID akan meng-generate kode QR dan meng-assign kode
-                  tersebut ke pendaftar valid secara otomatis sehingga panitia
-                  hanya perlu meng-scan QR penggunjung untuk memvalidasi stasus
-                  mereka.
-                </h4>
-                <div className="flex shrink-0 align-bottom items-end h-[20%]">
-                  <button
-                    type="button"
-                    className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
-                  >
-                    Learn More{" "}
-                    <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={flyVariants.upD1}
-              className="flex flex-row py-1 items-center h-fit lg:h-[clamp(12rem,25vh,80rem)] w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.75rem,0.75vw,1.25rem)] border-[#5ce1e6]"
-            >
-              <div className="flex shrink-0 justify-center items-center overflow-hidden h-[100%] w-[25%] md:w-[13%] aspect-square pt-[1%]">
-                <VscGraph className="flex shrink-0 w-[90%] h-[90%] text-[#7489bf]" />
-              </div>
-              <div className="flex flex-col gap-1.5 md:gap-[clamp(0rem,1vw,2rem)] text-left h-[90%] w-full">
-                <h3 className="font-extrabold text-[clamp(1rem,2vw,6rem)] md:ml-2 whitespace-normal break-words leading-5 md:leading-normal">
-                  Visual Report
-                </h3>
-                <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
-                  RQRE.ID menyediakan grafik visual yang akan memperlihatkan
-                  laporan jumlah peserta, pengunjung yang hadir, dan beragam
-                  data relevan lainnya.
-                </h4>
-                <div className="flex shrink-0 align-bottom items-end h-[20%]">
-                  <button
-                    type="button"
-                    className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
-                  >
-                    Learn More{" "}
-                    <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+        <div className="flex flex-col gap-4 lg:gap-6 w-full md:w-[98%] 2xl:w-[80%]">
+          {cards.map((c) => (
+            <InfoCard
+              key={c.id}
+              id={c.id}
+              title={c.title}
+              titleBreak={c.titleBreak}
+              Icon={c.Icon}
+              desc={c.desc}
+              expanded={(expandedCards as Record<string, boolean>)[c.id]}
+              onToggle={() => toggleCard(c.id)}
+            />
+          ))}
         </div>
       </section>
       <section id="faq" className="relative bg-gray-900 w-full z-10 pt-5 pb-10">

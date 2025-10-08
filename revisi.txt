@@ -9,33 +9,3 @@ sedangkan whatsapp diubah jdi bubble yang hover di pojok kanan layar
 
 
 backup:
-<div className="flex relative h-full w-full">
-                  <AnimatePresence>
-                    {expandedCards.scan && (
-                      <motion.div
-                        key="expanded-content"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.35, ease: "easeInOut" }}
-                        className="flex flex-col gap-5 overflow-hidden"
-                      >
-                        <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
-                          Sebuah media verifikasi pendaftar berupa Quick
-                          Response (QR) code yang akan dipakai oleh pendaftar
-                          untuk memverifikasi diri mereka sebagai partisipan
-                          valid.
-                        </h4>
-                        <div className="flex shrink-0 align-bottom items-end h-[20%]">
-                          <button
-                            type="button"
-                            className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
-                          >
-                            Learn More{" "}
-                            <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
