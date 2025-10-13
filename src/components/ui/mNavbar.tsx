@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import NavLink from "./dNavbar";
+import { motion } from "framer-motion";
 
 export default function MobileSidebar() {
   const [isMounted, setIsMounted] = useState(false);
@@ -34,8 +35,9 @@ export default function MobileSidebar() {
   return (
     <>
       <button
+        aria-label="Open navigation menu"
         type="button"
-        className="md:hidden flex flex-col justify-center items-center space-y-1. bg-gray-500/40 border-white border-1 h-10 w-10 m-2"
+        className="md:hidden flex flex-col justify-center items-center space-y-1 bg-gray-500/40 border-white border h-10 w-10 m-2"
         onClick={openSidebar}
       >
         <span className="w-6 h-[3px] bg-white mb-[4px]" />
@@ -44,22 +46,27 @@ export default function MobileSidebar() {
       </button>
       {isMounted && (
         <>
-          <button
-            type="button"
-            className="fixed inset-0 bg-black/40 z-40"
-            onClick={closeSidebar}
-          />
-          <aside
+          {isOpen ? (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isOpen ? 0.4 : 0 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              type="button"
+              className="fixed inset-0 bg-black z-40"
+              onClick={closeSidebar}
+            />
+          ) : ("")}
+          <motion.aside
             onTransitionEnd={handleTransitionEnd}
-            className={`absolute top-0 right-0 h-72 w-64 bg-slate-800 border-s-6 border-t-6 border-b-6 border-slate-900/50 text-white z-50 transition-transform duration-300 ease-in-out ${
-              isOpen
-                ? "translate-x-0 pointer-events-auto"
-                : "translate-x-full pointer-events-none"
-            }`}
+            initial={{ x: "100%" }}
+            animate={{ x: isOpen ? 0 : "100%" }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className={`fixed top-0 right-0 h-72 w-64 bg-slate-800 border-s-6 border-t-6 border-b-6 border-slate-900/50 text-white z-50`}
           >
             <div className="flex flex-row justify-between items-center p-4 border-b border-slate-700">
               <span className="font-bold">Akses Cepat</span>
               <button
+                aria-label="Close navigation menu"
                 type="button"
                 className="text-xl font-extrabold"
                 onClick={closeSidebar}
@@ -67,10 +74,10 @@ export default function MobileSidebar() {
                 ✕
               </button>
             </div>
-            <ul className="flex flex-col p-4">
+            <ul role="navigation" aria-label="Main Navigation" className="flex flex-col p-4">
               <NavLink onNavigate={closeSidebar} />
             </ul>
-          </aside>
+          </motion.aside>
         </>
       )}
     </>

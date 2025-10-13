@@ -9,7 +9,7 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
-import { easeInOut, motion, useReducedMotion } from "framer-motion";
+import { easeInOut, motion, scale, useReducedMotion } from "framer-motion";
 import type { IconType } from "react-icons";
 import { BiScan } from "react-icons/bi";
 import { IoTicketOutline } from "react-icons/io5";
@@ -56,6 +56,7 @@ function useThrottledResizeObserver(
 export default function HomeClient() {
   const [currSlide, setCurrSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const [subject, setSubject] = useState("Hal Umum");
   const [expandedCards, setExpandedCards] = useState({
     scan: false,
     ticket: false,
@@ -166,7 +167,7 @@ export default function HomeClient() {
               height: expanded ? "auto" : 0,
             }}
             transition={{ layout: { duration: 0, ease: "linear" } }}
-            className={`flex justify-center items-center overflow-hidden aspect-square
+            className={`flex justify-center items-center overflow-hidden aspect-square duration-0 transition-all
               ${expanded ? "w-[25%] md:w-[13%]" : "w-[5%]"}
               ${id === "graph" ? "pt-[1%]" : ""}
             `}
@@ -371,14 +372,19 @@ export default function HomeClient() {
     <div className="min-h-screen contain-inline-size">
       <div className="absolute inset-0  bg-gradient-to-r from-[#7c3aed] to-[#7dd3fc]" />
       <div className="absolute inset-y-0 left-0 w-[100%] md:w-[99.9%] -skew-x-60 origin-top-left bg-gradient-to-br from-[#0b1220] to-[#1a1f2e]" />
-      <div
-        className="fixed bottom-6 right-6 md:bottom-4 md:right-4 z-50 w-[clamp(3rem,4vw,8rem)] h-[clamp(3rem,4vw,8rem)]
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.4, ease: "easeOut", type: "spring" }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-5 right-2 md:bottom-[clamp(0.25rem,1vw,2rem)] md:right-[clamp(0.25rem,1vw,2rem)] z-50 w-[clamp(3rem,4vw,15rem)] h-[clamp(3rem,4vw,15rem)]
           flex items-center justify-center rounded-full bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] shadow-lg hover:shadow-2xl
-          transition-all duration-300 ease-out hover:scale-110 active:scale-110 focus:scale-105 cursor-pointer 
+          transition-shadow cursor-pointer 
         "
       >
-        <FaWhatsapp className="text-white h-[75%] w-[75%]"/>
-      </div>
+        <FaWhatsapp className="text-white h-[75%] w-[75%]" />
+      </motion.div>
       <section
         id="hero"
         className="relative z-10 min-h-[clamp(5.5rem,100vh,150rem)] flex flex-col items-center"
@@ -409,13 +415,13 @@ export default function HomeClient() {
           <button
             type="button"
             onClick={() => handleScroll("event")}
-            className="bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-[clamp(2.5rem,3vw,5rem)] w-[clamp(12.5rem,15vw,500%)] rounded-4xl text-shadow-md font-semibold text-[clamp(1.125rem,1vw,3rem)]"
+            className="bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-[clamp(2.5rem,3vw,7rem)] w-[clamp(12.5rem,15vw,500%)] rounded-4xl text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,5rem)]"
           >
             Daftarkan Diri
           </button>
           <button
             type="button"
-            className="bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-[clamp(2.5rem,3vw,5rem)] w-[clamp(12.5rem,15vw,500%)] rounded-4xl text-shadow-md font-semibold text-[clamp(1.125rem,1vw,3rem)]"
+            className="bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-[clamp(2.5rem,3vw,7rem)] w-[clamp(12.5rem,15vw,500%)] rounded-4xl text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,5rem)]"
           >
             Daftarkan Event
           </button>
@@ -685,6 +691,105 @@ export default function HomeClient() {
             </motion.p>
           </div>
         </div>
+        <div className="flex flex-col mt-5 md:mt-[5%] gap-[clamp(0.5rem,1vw,1.5rem)] items-center-safe justify-center">
+          <motion.h2
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={flyVariants.up}
+            className="text-[clamp(1.75rem,2.1vw,85px)] text-shadow-md lg:text-shadow-lg text-shadow-black/60 text-center font-semibold whitespace-normal break-words leading-none"
+          >
+            HUBUNGI KAMI{" "}
+            <span className="whitespace-nowrap">MELALUI EMAIL</span>
+          </motion.h2>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={flyVariants.up}
+            className="flex h-[clamp(0.4rem,0.5vw,1.2rem)] w-[clamp(14.25rem,35vw,83.75rem)] rounded-3xl bg-black/10 overflow-hidden"
+          >
+            <motion.div
+              variants={flyVariants.fill}
+              className="h-full bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-3xl"
+            />
+          </motion.div>
+          <div className="flex w-[95%] md:w-[80%] h-fit">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={flyVariants.upD1}
+              className="flex flex-col justify-center items-start mt-[0.25%] p-[2%] bg-white rounded-[clamp(0.5rem,1vw,1.5rem)] w-full gap-[clamp(0.25rem,0.5vw,1rem)]"
+            >
+              <h4 className="text-black w-full text-center md:text-start font-bold text-[clamp(1rem,1.35vw,3rem)]">
+                Beritahu kami apa yang anda ingin ketahui
+              </h4>
+              <h5 className="text-gray-600 w-full font-semibold text-center md:text-start text-[clamp(0.7rem,1.35vw,3rem)]">
+                staff kami akan sebisa mungkin menjawab pertanyaan anda
+              </h5>
+              <form className="flex flex-col mt-3 md:mt-[1%] px-2 md:px-0 space-y-[clamp(0.2rem,1.5vh,1.5rem)] w-full">
+                <label className="flex flex-col font-bold text-black text-[clamp(0.8rem,1.35vw,3rem)] gap-[clamp(0rem,0.5vw,0.25rem)]">
+                  Alamat Email
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="Masukan Alamat Email Anda"
+                    required={true}
+                    className="md:w-full border rounded mt-1 p-[clamp(0.625rem,0.5vw,0.75rem)] text-black"
+                  />
+                </label>
+                <fieldset className="flex flex-col mt-2 gap-[clamp(0.5rem,0.8vw,1rem)]">
+                  <legend className="font-bold text-black text-[clamp(0.8rem,1.35vw,3rem)] mb-[0.5%]">
+                    Ingin menanyakan seputaran :
+                  </legend>
+                  <div className="flex flex-wrap gap-[clamp(0.3rem,0.8vw,0.75rem)] w-full justify-center md:justify-start">
+                    {[
+                      "Pendaftaran Event",
+                      "Pendaftaran Peserta",
+                      "Hal Umum",
+                      "Sistem Verifikasi",
+                      "Hal yang Lain",
+                    ].map((label) => (
+                      <motion.button
+                        key={label}
+                        type="button"
+                        whileTap={{ scale: 0.95 }}
+                        whileHover={{ scale: 1.05 }}
+                        onClick={() => setSubject(label)}
+                        transition={{ type: "spring" }}
+                        className={`px-[clamp(0.5rem,1.5vw,1.25rem)] py-[clamp(0.4rem,0.6vw,0.6rem)] ease-in-out
+                          rounded-full border text-[clamp(0.75rem,1vw,1rem)] font-bold transition-all
+                          ${
+                            subject === label
+                              ? "bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] text-white shadow-md"
+                              : "border-gray-300 text-gray-700 hover:border-[#f0945b]"
+                          }`}
+                      >
+                        {label}
+                      </motion.button>
+                    ))}
+                  </div>
+                  <input type="hidden" name="subjek" value={subject} />
+                </fieldset>
+                <textarea
+                  name="pesan"
+                  placeholder="Ketikkan Pesan Anda Disini"
+                  required={true}
+                  className="md:w-full text-[clamp(0.8rem,1.35vw,3rem)] border rounded mt-1 p-[clamp(0.625rem,0.5vw,0.75rem)] text-black"
+                />
+                <div className="flex w-full justify-center items-center">
+                  <button
+                    type="submit"
+                    className="px-[clamp(1rem,1.2vw,1.5rem)] py-1 md:py-[clamp(0.1rem,0.75vh,2rem)] md:text-[clamp(1rem,1.5vw,5rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-white font-bold"
+                  >
+                    Kirimkan
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        </div>
       </section>
     </div>
   );
@@ -705,8 +810,8 @@ function Arrow(props: { left?: boolean; onClick: (e: any) => void }) {
         transition-colors duration-100 active:duration-75 text-[clamp(5rem,6vw,12rem)] md:w-[5%] justify-center items-center text-shadow-md
       ${
         props.left
-          ? "-left-1 md:left-20 lg:-left-2 "
-          : "-right-1 pr-[2px] md:right-20 lg:-right-2"
+          ? "left-0 md:left-20 lg:-left-2 "
+          : "right-0 md:right-20 lg:-right-2"
       }`}
     >
       {props.left ? "❮" : "❯"}

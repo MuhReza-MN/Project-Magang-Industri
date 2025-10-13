@@ -1,0 +1,30 @@
+<!-- Created with PixiEditor (https://pixieditor.net) -->
+<svg version="1.1" viewBox="0 0 1280 598" xmlns="http://www.w3.org/2000/svg">
+  <path d="M208.361 438.798L158.711 438.798L110.058 337.545C110.058 337.545 158.711 337.545 158.711 337.545L208.361 438.798ZM205.392 303.566L205.392 338.545L110.058 338.545L110.058 303.566L205.392 303.566ZM205.392 203.313L205.392 238.292L110.058 238.292L110.058 203.313L205.392 203.313ZM69.3121 303.566L104.291 303.566L104.291 438.799L69.3121 438.799L69.3121 303.566ZM49.8931 203.313L104.291 203.313L104.291 238.292L49.8931 238.292L49.8931 203.313ZM170.413 203.313L205.392 203.313L205.392 297.343L170.413 297.343L170.413 203.313ZM104.291 303.566L104.291 439.317L49.8931 439.317L49.8931 303.566L104.291 303.566Z" fill-rule="nonzero" transform="matrix(2, 0, 0, 2, 0, -342.2675)" fill="url(#linearGradient0)" stroke="#000000" stroke-width="0" stroke-linecap="square" stroke-linejoin="miter" opacity="1" id="Rectangle" />
+  <path d="M319.872 203.313L319.872 238.292L240.563 238.292L240.563 203.313L319.872 203.313ZM319.872 362.183L319.872 397.161L223.074 397.161L223.074 362.183L319.872 362.183ZM319.872 403.301L319.872 439.317L265.474 439.317L265.474 403.301L319.872 403.301ZM418.963 203.313L418.963 238.292L326.01 238.292L326.01 203.313L418.963 203.313ZM418.963 303.567L418.963 338.545L326.01 338.545L326.01 303.567L418.963 303.567ZM433.549 438.799L379.487 438.799L326.51 337.545C326.51 337.545 379.487 337.545 379.487 337.545L433.549 438.799ZM386.474 203.313L421.453 203.313L421.453 297.343L386.474 297.343L386.474 203.313ZM223.074 303.566L258.053 303.566L258.053 388.672L223.074 388.672L223.074 303.566ZM223.074 203.313L258.053 203.313L258.053 297.343L223.074 297.343L223.074 203.313Z" fill-rule="nonzero" transform="matrix(2, 0, 0, 2, 0, -342.2675)" fill="url(#linearGradient1)" stroke="#000000" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="1" id="Rectangle" />
+  <path d="M588.124 303.567L588.124 338.545L442.703 338.545L442.703 303.567L588.124 303.567ZM535.147 403.301L535.147 439.317L442.193 439.317L442.193 403.301L535.147 403.301ZM592.225 202.795L592.225 238.81L499.271 238.81L499.271 202.795L592.225 202.795ZM442.703 202.795L495.17 202.795L495.17 238.81L442.703 238.81L442.703 202.795ZM539.758 403.301L592.225 403.301L592.225 439.317L539.758 439.317L539.758 403.301Z" fill-rule="nonzero" transform="matrix(2, 0, 0, 2, 0, -342.2675)" fill="url(#linearGradient2)" stroke="#000000" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="1" id="Rectangle" />
+  <path d="M0.442474 182.542L0.442474 171.134L130.025 171.134L130.025 182.542L0.442474 182.542ZM11.4526 301.099L0 301.099L3.8147e-06 172.015L11.4526 172.015L11.4526 301.099ZM639.558 458.43L639.558 469.827L510.099 469.827L510.099 458.43L639.558 458.43ZM628.558 339.986L640 339.986L640 468.946L628.558 468.946L628.558 339.986Z" fill-rule="nonzero" transform="matrix(2, 0, 0, 2, 0, -342.2675)" fill="url(#linearGradient3)" stroke="#000000" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="1" id="Rectangle" />
+  <path d="M447.193 349.694L490.17 349.694L490.17 392.671L447.193 392.671L447.193 349.694ZM447.193 249.366L490.17 249.366L490.17 292.343L447.193 292.343L447.193 249.366ZM331.51 249.366L374.487 249.366L374.487 292.343L331.51 292.343L331.51 249.366ZM270.474 309.057L313.451 309.057L313.451 352.034L270.474 352.034L270.474 309.057ZM270.474 249.366L313.451 249.366L313.451 292.343L270.474 292.343L270.474 249.366ZM115.939 249.366L158.915 249.366L158.915 292.343L115.939 292.343L115.939 249.366Z" fill-rule="nonzero" transform="matrix(2, 0, 0, 2, 0, -342.2675)" fill="#ffffff" fill-opacity="0" stroke="url(#linearGradient4)" stroke-width="10" stroke-linecap="round" stroke-linejoin="miter" opacity="1" id="Rectangle" />
+  <defs>
+    <linearGradient x1="0" y1="0" x2="1" y2="0" id="linearGradient0">
+      <stop stop-color="#eb4b3f" offset="7.377049180327869%" stop-opacity="1" />
+      <stop stop-color="#ff6e39" offset="100%" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient x1="0" y1="0" x2="1" y2="0" id="linearGradient1">
+      <stop stop-color="#eb4b3f" offset="7.377049180327869%" stop-opacity="1" />
+      <stop stop-color="#ff6e39" offset="100%" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient x1="0" y1="0" x2="1" y2="0" id="linearGradient2">
+      <stop stop-color="#eb4b3f" offset="7.377049180327869%" stop-opacity="1" />
+      <stop stop-color="#ff6e39" offset="100%" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient x1="0" y1="0" x2="0" y2="1" id="linearGradient3">
+      <stop stop-color="#eb4b3f" offset="7.377049180327869%" stop-opacity="1" />
+      <stop stop-color="#ff6e39" offset="100%" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient x1="0" y1="0" x2="1" y2="1" id="linearGradient4">
+      <stop stop-color="#eb4b3f" offset="7.377049180327869%" stop-opacity="1" />
+      <stop stop-color="#ff6e39" offset="100%" stop-opacity="1" />
+    </linearGradient>
+  </defs>
+</svg>

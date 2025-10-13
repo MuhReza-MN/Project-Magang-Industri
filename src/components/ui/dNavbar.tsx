@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { clamp, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 type NavLinkProps = {
   onNavigate?: () => void;
@@ -18,6 +18,7 @@ export default function NavLink({ onNavigate }: NavLinkProps) {
   const [currSect, setCurrSect] = useState("hero");
   const [hovered, setHovered] = useState<string | null>(null);
   const [params, setParams] = useState({ left: 0 });
+  const [showBar, setShowBar] = useState(true);
   const containerRef = useRef<HTMLUListElement>(null);
 
   const handleScroll = (id: string) => {
@@ -38,18 +39,30 @@ export default function NavLink({ onNavigate }: NavLinkProps) {
   };
 
   useEffect(() => {
-    const activeId = hovered || currSect;
     const container = containerRef.current;
     if (!container) return;
 
-    const activeEl = container.querySelector<HTMLButtonElement>(
-      `[data-id="${activeId}"]`,
-    );
-    if (activeEl) {
-      const barCenter = activeEl.offsetLeft + activeEl.offsetWidth / 2;
+    const updateBarPos = () => {
+      const activeId = hovered || currSect;
+      const activeEl = container.querySelector<HTMLButtonElement>(
+        `[data-id="${activeId}"]`,
+      );
+      if (activeEl) {
+        const barCenter = activeEl.offsetLeft + activeEl.offsetWidth / 2;
 
-      setParams({ left: barCenter });
+        setParams({ left: barCenter });
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(updateBarPos);
+    resizeObserver.observe(container);
+
+    window.addEventListener("resize", updateBarPos);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateBarPos);
     }
+    
   }, [currSect, hovered]);
 
   useEffect(() => {
@@ -61,8 +74,8 @@ export default function NavLink({ onNavigate }: NavLinkProps) {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const mostVisible = entries.reduce((prev, curr) => 
-          curr.intersectionRatio > prev.intersectionRatio ? curr : prev
+        const mostVisible = entries.reduce((prev, curr) =>
+          curr.intersectionRatio > prev.intersectionRatio ? curr : prev,
         );
 
         if (mostVisible.isIntersecting) setCurrSect(mostVisible.target.id);
@@ -79,6 +92,16 @@ export default function NavLink({ onNavigate }: NavLinkProps) {
     };
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      const isMWide = window.innerWidth > window.innerHeight;
+      setShowBar(window.innerWidth >= 640 || isMWide);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <ul
       ref={containerRef}
@@ -86,12 +109,14 @@ export default function NavLink({ onNavigate }: NavLinkProps) {
         text-sm md:mr-2 md:items-center justify-center py-1 md:py-0
       "
     >
-      <motion.div
-        className="absolute top-2 h-[clamp(0.2rem,0.3vw,2rem)] w-[clamp(1.25rem,3.5vw,4rem)] bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] pointer-events-none"
-        animate={{ left: params.left }}
-        transition={{ type: "spring", stiffness: 400, damping: 30 }}
-        style={{ translateX: "-50%" }}
-      />
+      {showBar && (
+        <motion.div
+          className="absolute top-2 h-[clamp(0.2rem,0.3vw,2rem)] w-[clamp(1.25rem,3.5vw,4rem)] bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] pointer-events-none"
+          animate={{ left: params.left }}
+          transition={{ type: "spring", stiffness: 250, damping: 25 }}
+          style={{ translateX: "-50%" }}
+        />
+      )}
 
       {navItems.map((item) => (
         <li key={item.id}>
@@ -101,8 +126,9 @@ export default function NavLink({ onNavigate }: NavLinkProps) {
             onClick={() => handleScroll(item.id)}
             onMouseEnter={() => setHovered(item.id)}
             onMouseLeave={() => setHovered(null)}
-            className={`relative text-gray-300 font-extrabold hover:text-gray-400 transition-transform duration-10 md:duration-200 w-full text-left md:text-center md:px-[clamp(0.75rem,1vw,2rem)]
-              ${item.id === "hero" || item.id === "faq" ? "text-[clamp(1rem,1.2vw,5rem)] tracking-widest" : "text-[clamp(0.9rem,1.1vw,5rem)]"} active:text-white 
+            className={`relative  font-extrabold transition-all duration-10 md:duration-200 w-full text-left md:text-center md:px-[clamp(0.75rem,1vw,2rem)]
+              ${item.id === "hero" || item.id === "faq" ? "text-[clamp(1rem,1.2vw,5rem)] tracking-widest" : "text-[clamp(0.9rem,1.1vw,5rem)]"} active:text-white md:active:text-gray-100
+              ${item.id === currSect ? "text-white" : "text-gray-300"}
             `}
           >
             {item.label}

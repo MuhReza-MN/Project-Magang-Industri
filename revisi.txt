@@ -9,3 +9,26 @@ sedangkan whatsapp diubah jdi bubble yang hover di pojok kanan layar
 
 
 backup:
+ const container = containerRef.current;
+    if (!container) return;
+
+    const updateBarPos = () => {
+      const activeId = hovered || currSect;
+      const activeEl = container.querySelector<HTMLButtonElement>(
+        `[data-id="${activeId}"]`,
+      );
+      if (activeEl) {
+        const barCenter = activeEl.offsetLeft + activeEl.offsetWidth / 2;
+
+        setParams({ left: barCenter });
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(updateBarPos);
+    resizeObserver.observe(container);
+
+    window.addEventListener("resize", updateBarPos);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateBarPos);
+    }

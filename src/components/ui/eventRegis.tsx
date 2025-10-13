@@ -112,7 +112,7 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                           `}
                         />
                       </motion.button>
-                      <ExpandImage imageName={`Poster ${eventName}`} image={image} />
+                      <ExpandImage imageName={`Poster ${eventName}`} image={image} FABmode={true} />
                     </div>
                     <div className="flex relative z-40 w-full h-full border-4 border-gray-100/70 overflow-hidden">
                       <motion.div
@@ -165,7 +165,7 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                         Alamat Email
                         <input
                           type="email"
-                          placeholder="Your Email"
+                          placeholder="Masukan Alamat Email Anda"
                           className="md:w-full border rounded mt-1 p-[clamp(0.625rem,0.5vw,0.75rem)] text-black"
                         />
                       </label>
@@ -181,9 +181,9 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                           onChange={(phone) => setPhone(phone)}
                           defaultMask="... .... .... .."
                           inputClass="
-                        !w-full !pl-[clamp(5.5rem,7vw,7rem)] p-[clamp(1.25rem,1vw,2.5rem)] text-black !border !border-black 
-                        !text-[clamp(1rem,1vw,2.2rem)] focus:outline-none focus:ring-2 focus:ring-blue-500
-                      "
+                            !w-full !pl-[clamp(5.5rem,7vw,7rem)] p-[clamp(1.25rem,1vw,2.5rem)] text-black !border !border-black 
+                            !text-[clamp(1rem,1vw,2.2rem)] focus:outline-none focus:ring-2 focus:ring-blue-500
+                          "
                           containerClass="!w-full mt-1 text-black"
                           buttonClass="!flex !border-black !min-w-[clamp(5rem,10vw,5.5rem)] !justify-start !text-[clamp(0.9rem,1vw,2rem)] !mr-[2000px]"
                           dropdownClass="!flex !flex-col !mt-[clamp(2rem,3.5vh,10rem)] !w-[clamp(18.75rem,20vw,35.25rem)]"

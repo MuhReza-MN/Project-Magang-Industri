@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   animate,
@@ -16,15 +16,21 @@ import { FiZoomIn, FiZoomOut } from "react-icons/fi";
 type ExpandImgProps = {
   imageName: string;
   image?: string;
+  FABmode?: boolean;
 };
 
-export default function ExpandImage({ imageName, image }: ExpandImgProps) {
+export default function ExpandImage({
+  imageName,
+  image,
+  FABmode = false,
+}: ExpandImgProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scale, setScale] = useState(1);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const scaleMv = useMotionValue(1);
+
 
   const handleZoom = (newScale: number) => {
     const clamped = Math.min(Math.max(newScale, 1), 3);
@@ -48,30 +54,54 @@ export default function ExpandImage({ imageName, image }: ExpandImgProps) {
 
   return (
     <>
-      <motion.button
-        type="button"
-        whileTap={{ scale: 0.85 }}
-        transition={{ duration: 0.2 }}
-        onClick={() => setIsOpen(true)}
-        className="w-[clamp(2.5rem,2vw,5.5rem)] h-[clamp(2.5rem,2vw,5.5rem)] rounded-full bg-gray-300/60 flex items-center justify-center hover:bg-gray-200/80 active:bg-gray-200/80 overflow-hidden"
-      >
-        <motion.div
-          whileHover={{ scale: 1.2 }}
-          transition={{ type: "spring", stiffness: 500, damping: 25 }}
+      {FABmode ? (
+        <motion.button
+          type="button"
+          whileTap={{ scale: 0.85 }}
+          transition={{ duration: 0.2 }}
+          onClick={() => setIsOpen(true)}
+          className="w-[clamp(2.5rem,2vw,5.5rem)] h-[clamp(2.5rem,2vw,5.5rem)] rounded-full bg-gray-300/60 flex items-center justify-center hover:bg-gray-200/80 active:bg-gray-200/80 overflow-hidden"
         >
-          <HiArrowsExpand className="text-[clamp(1.8rem,1.5vw,10rem)] text-slate-950/70 hover:text-black/80 active:text-black/80" />
-        </motion.div>
-      </motion.button>
+          <motion.div
+            whileHover={{ scale: 1.2 }}
+            transition={{ type: "spring", stiffness: 500, damping: 25 }}
+          >
+            <HiArrowsExpand className="text-[clamp(1.8rem,1.5vw,10rem)] text-slate-950/70 hover:text-black/80 active:text-black/80" />
+          </motion.div>
+        </motion.button>
+      ) : (
+        <motion.button
+          type="button"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          whileHover={{ backgroundColor: "rgba(30, 41, 59, 0.5)" }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsOpen(true)}
+          transition={{ layout: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } }}
+          className="relative z-50 w-full h-full flex items-center justify-center shadow-lg "
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 0 }}
+            whileTap={{ scale: 0.95, opacity: 0.5 }}
+            whileHover={{ opacity: 1, scale: 1.2, rotate: 5 }}
+            transition={{ type: "spring", stiffness: 500, damping: 25 }}
+            className="flex relative w-full h-full justify-center items-center"
+          >
+            <HiArrowsExpand className="size-[50%] text-white/80" />
+          </motion.div>
+        </motion.button>
+      )}
 
       {createPortal(
         <AnimatePresence mode="wait">
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.99 }}
+              initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.99 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed inset-0 z-50 lg:z-40 flex items-center justify-center bg-slate-900/40 top-0 lg:top-5 min-h-screen"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 top-0 min-h-screen"
             >
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
@@ -88,7 +118,7 @@ export default function ExpandImage({ imageName, image }: ExpandImgProps) {
                         onClick={handleClose}
                         whileTap={{ scale: 0.85 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-0 right-0 z-60 bg-black/70 hover:bg-black/90 active:bg-black/90 text-white/80 hover:text-white/90 active:text-white/90 rounded-full p-[clamp(0.5rem,0.1vw,1.5rem)] transition-colors duration-100"
+                        className="absolute top-0 right-0 z-60 bg-black/70 hover:bg-black/90 active:bg-black/90 text-white/80 hover:text-white/90 active:text-white/90 rounded-full p-[clamp(0.75rem,0.1vw,1.5rem)] transition-colors duration-100"
                       >
                         <motion.div
                           whileHover={{ scale: 1.1 }}
@@ -98,7 +128,7 @@ export default function ExpandImage({ imageName, image }: ExpandImgProps) {
                             damping: 25,
                           }}
                         >
-                          <RiCloseLargeFill className="text-[clamp(1rem,2vw,10rem)]" />
+                          <RiCloseLargeFill className="text-[clamp(1.5rem,2vw,10rem)]" />
                         </motion.div>
                       </motion.button>
                       <div className="absolute z-50 flex flex-row gap-3 bottom-2 left-2">
