@@ -239,17 +239,11 @@ export default function HomeClient() {
   const handleScroll = (id: string) => {
     const el = document.getElementById(id);
     const header = document.querySelector("header");
-    if (el && header) {
-      const headerOffset = header.getBoundingClientRect().height;
-      const elementPos = el.offsetTop;
-      const offsetPos = elementPos - headerOffset;
-
-      window.scrollTo({
-        top: offsetPos,
-        behavior: "smooth",
-      });
-    }
+    if (!el || !header) return;
+    const offset = el.offsetTop - header.getBoundingClientRect().height;
+    window.scrollTo({ top: offset, behavior: "smooth" });
   };
+
 
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
     loop: true,
@@ -520,11 +514,10 @@ export default function HomeClient() {
                 key={idx}
                 type="button"
                 onClick={() => instanceRef.current?.moveToIdx(idx)}
-                className={`w-[clamp(1rem,1.25vw,1.75rem)] h-[clamp(1rem,1.25vw,1.75rem)] rounded-full ${
-                  currSlide === idx
+                className={`w-[clamp(1rem,1.25vw,1.75rem)] h-[clamp(1rem,1.25vw,1.75rem)] rounded-full ${currSlide === idx
                     ? "bg-orange-500 hover:bg-orange-600 active:bg-orange-600"
                     : "bg-black/40 hover:bg-black/60 active:bg-orange-600"
-                } transition-colors duration-200 active:duration-75`}
+                  } transition-colors duration-200 active:duration-75`}
               />
             ))}
           </motion.div>
@@ -760,10 +753,9 @@ export default function HomeClient() {
                         transition={{ type: "spring" }}
                         className={`px-[clamp(0.5rem,1.5vw,1.25rem)] py-[clamp(0.4rem,0.6vw,0.6rem)] ease-in-out
                           rounded-full border text-[clamp(0.75rem,1vw,1rem)] font-bold transition-all
-                          ${
-                            subject === label
-                              ? "bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] text-white shadow-md"
-                              : "border-gray-300 text-gray-700 hover:border-[#f0945b]"
+                          ${subject === label
+                            ? "bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] text-white shadow-md"
+                            : "border-gray-300 text-gray-700 hover:border-[#f0945b]"
                           }`}
                       >
                         {label}
@@ -808,11 +800,10 @@ function Arrow(props: { left?: boolean; onClick: (e: any) => void }) {
       className={`
         absolute flex shrink-0 top-1/2 z-20 -translate-y-1/2 py-10 md:py-2 md:px-10 lg:px-0 font-bold text-white/70 hover:text-white active:text-white bg-black/20 lg:bg-black/0 active:bg-black/30 lg:active:bg-black/0
         transition-colors duration-100 active:duration-75 text-[clamp(5rem,6vw,12rem)] md:w-[5%] justify-center items-center text-shadow-md
-      ${
-        props.left
+      ${props.left
           ? "left-0 md:left-20 lg:-left-2 "
           : "right-0 md:right-20 lg:-right-2"
-      }`}
+        }`}
     >
       {props.left ? "❮" : "❯"}
     </motion.button>

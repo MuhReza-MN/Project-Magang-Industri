@@ -1,6 +1,5 @@
 import "./globals.css";
-import NavLink from "@/components/ui/dNavbar";
-import MobileSidebar from "@/components/ui/mNavbar";
+import Navbar from "@/components/navbar/NavBar";
 import Image from "next/image";
 
 export default function RootLayout({
@@ -12,21 +11,24 @@ export default function RootLayout({
     <html lang="en">
       <body className="flex flex-col min-h-screen">
         <header className="sticky top-0 left-0 z-50 w-full bg-slate-900/75 text-white">
-          <nav className=" mx-auto flex justify-between items-center lg:px-[clamp(0.25rem,0.75vw,2rem)]">
-            <div className="relative font-bold lg:my-[clamp(0.15rem,1.5vh,2rem)] h-[clamp(3rem,5vh,7.5rem)] w-35 md:w-[clamp(15rem,20vw,25rem)] justify-center items-center">
-              <Image 
+          {/* don't touch this duct-taped section */}
+          <nav className="relative flex justify-between w-full overflow-hidden items-center lg:px-[clamp(0.25rem,0.75vw,2rem)]">
+            <div className="relative flex-shrink-0 font-bold lg:my-[clamp(0.15rem,1.5vh,2rem)] h-[clamp(3rem,5vh,7.5rem)] w-35 md:w-[clamp(15rem,20vw,25rem)] justify-center items-center">
+              <Image
                 src={"/rqre.svg"}
                 alt="LOGO RQRE"
                 fill
-                className="text-[clamp(0.9rem,1.2vw,10rem)] object-contain"
+                className="object-contain"
                 priority
               />
             </div>
-            <ul className="hidden md:flex md:mr-2 h-full w-full justify-end">
-              <NavLink />
-            </ul>
-            <MobileSidebar />
+            <div className="absolute right-0 h-full -top-[50%] md:-top-0 items-center mt-1.5 md:mt-0">
+              <div className="flex shrink-0 h-full">
+                <Navbar />
+              </div>
+            </div>
           </nav>
+          {/* end of the duct-taped section */}
         </header>
         <div className="flex-grow">
           <main className="flex-1 relative">{children}</main>
