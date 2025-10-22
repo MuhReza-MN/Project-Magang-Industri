@@ -31,7 +31,6 @@ export default function ExpandImage({
   const y = useMotionValue(0);
   const scaleMv = useMotionValue(1);
 
-
   const handleZoom = (newScale: number) => {
     const clamped = Math.min(Math.max(newScale, 1), 3);
 
@@ -74,10 +73,15 @@ export default function ExpandImage({
           type="button"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          whileHover={{ backgroundColor: "rgba(30, 41, 59, 0.5)" }}
+          whileHover={{
+            backgroundImage:
+              "radial-gradient(circle at center, rgba(30,41,59,0.5) 0%, rgba(30,41,59,0) 90%)",
+          }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
-          transition={{ layout: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } }}
+          transition={{
+            layout: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] },
+          }}
           className="relative z-50 w-full h-full flex items-center justify-center shadow-lg "
         >
           <motion.div
@@ -93,110 +97,111 @@ export default function ExpandImage({
         </motion.button>
       )}
 
-      {createPortal(
-        <AnimatePresence mode="wait">
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.99 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 top-0 min-h-screen"
-            >
+      {typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence mode="wait">
+            {isOpen && (
               <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 50 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-                className="relative w-[98%] md:max-h-screen flex flex-col items-center justify-center overflow-y-auto overflow-x-hidden p-4"
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.99 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 top-0 min-h-screen"
               >
-                <div className="flex flex-col items-center justify-center bg-white rounded-[clamp(0.5rem,1vw,1.5rem)] p-[clamp(0.01rem,0.5vw,1.5rem)] shadow-lg z-50 mt-[clamp(0.01rem,1.2vw,200rem)] w-[105%] md:w-[97%] relative">
-                  <div className="relative flex items-center justify-center rounded-[clamp(0.5rem,1vw,1.5rem)] w-full h-[80vh] md:h-[clamp(10rem,41vw,200rem)] border-4 border-gray-100/70 overflow-hidden bg-gray-100/70 ">
-                    <div className="relative flex flex-col w-full h-full">
-                      <motion.button
-                        type="button"
-                        onClick={handleClose}
-                        whileTap={{ scale: 0.85 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute top-0 right-0 z-60 bg-black/70 hover:bg-black/90 active:bg-black/90 text-white/80 hover:text-white/90 active:text-white/90 rounded-full p-[clamp(0.75rem,0.1vw,1.5rem)] transition-colors duration-100"
-                      >
-                        <motion.div
-                          whileHover={{ scale: 1.1 }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 500,
-                            damping: 25,
-                          }}
-                        >
-                          <RiCloseLargeFill className="text-[clamp(1.5rem,2vw,10rem)]" />
-                        </motion.div>
-                      </motion.button>
-                      <div className="absolute z-50 flex flex-row gap-3 bottom-2 left-2">
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 50 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  className="relative w-[98%] md:max-h-screen flex flex-col items-center justify-center overflow-y-auto overflow-x-hidden p-4"
+                >
+                  <div className="flex flex-col items-center justify-center bg-white rounded-[clamp(0.5rem,1vw,1.5rem)] p-[clamp(0.01rem,0.5vw,1.5rem)] shadow-lg z-50 mt-[clamp(0.01rem,1.2vw,200rem)] w-[105%] md:w-[97%] relative">
+                    <div className="relative flex items-center justify-center rounded-[clamp(0.5rem,1vw,1.5rem)] w-full h-[80vh] md:h-[clamp(10rem,41vw,200rem)] border-4 border-gray-100/70 overflow-hidden bg-gray-100/70 ">
+                      <div className="relative flex flex-col w-full h-full">
                         <motion.button
                           type="button"
-                          onClick={() => handleZoom(scale + 0.2)}
-                          disabled={scale >= 3}
+                          onClick={handleClose}
                           whileTap={{ scale: 0.85 }}
-                          animate={scale >= 3 ? { scale: [1, 1.1, 1] } : {}}
                           transition={{ duration: 0.2 }}
-                          className={`w-[clamp(2.5rem,3vw,20rem)] h-[clamp(2.5rem,3vw,20rem)] rounded-full flex items-center justify-center 
+                          className="absolute top-0 right-0 z-60 bg-black/70 hover:bg-black/90 active:bg-black/90 text-white/80 hover:text-white/90 active:text-white/90 rounded-full p-[clamp(0.75rem,0.1vw,1.5rem)] transition-colors duration-100"
+                        >
+                          <motion.div
+                            whileHover={{ scale: 1.1 }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 500,
+                              damping: 25,
+                            }}
+                          >
+                            <RiCloseLargeFill className="text-[clamp(1.5rem,2vw,10rem)]" />
+                          </motion.div>
+                        </motion.button>
+                        <div className="absolute z-50 flex flex-row gap-3 bottom-2 left-2">
+                          <motion.button
+                            type="button"
+                            onClick={() => handleZoom(scale + 0.2)}
+                            disabled={scale >= 3}
+                            whileTap={{ scale: 0.85 }}
+                            animate={scale >= 3 ? { scale: [1, 1.1, 1] } : {}}
+                            transition={{ duration: 0.2 }}
+                            className={`w-[clamp(2.5rem,3vw,20rem)] h-[clamp(2.5rem,3vw,20rem)] rounded-full flex items-center justify-center 
                           ${scale >= 3 ? "cursor-not-allowed bg-gray-800/60" : "bg-gray-300/60 hover:bg-gray-200/80 active:bg-gray-200/80"}
                         `}
-                        >
-                          <FiZoomIn
-                            className={`text-[clamp(2rem,2.5vw,10rem)] 
+                          >
+                            <FiZoomIn
+                              className={`text-[clamp(2rem,2.5vw,10rem)] 
                             ${scale >= 3 ? "text-gray-300/70" : "text-slate-950/70 hover:text-black/80 active:text-black/80"}
                           `}
-                          />
-                        </motion.button>
-                        <motion.button
-                          type="button"
-                          onClick={() => handleZoom(scale - 0.2)}
-                          disabled={scale <= 1}
-                          whileTap={{ scale: 0.85 }}
-                          animate={scale <= 1 ? { scale: [1, 1.1, 1] } : {}}
-                          transition={{ duration: 0.2 }}
-                          className={`w-[clamp(2.5rem,3vw,20rem)] h-[clamp(2.5rem,3vw,20rem)] rounded-full flex items-center justify-center 
+                            />
+                          </motion.button>
+                          <motion.button
+                            type="button"
+                            onClick={() => handleZoom(scale - 0.2)}
+                            disabled={scale <= 1}
+                            whileTap={{ scale: 0.85 }}
+                            animate={scale <= 1 ? { scale: [1, 1.1, 1] } : {}}
+                            transition={{ duration: 0.2 }}
+                            className={`w-[clamp(2.5rem,3vw,20rem)] h-[clamp(2.5rem,3vw,20rem)] rounded-full flex items-center justify-center 
                           ${scale <= 1 ? "cursor-not-allowed bg-gray-800/60" : "bg-gray-300/60 hover:bg-gray-200/80 active:bg-gray-200/80"}
                         `}
-                        >
-                          <FiZoomOut
-                            className={`text-[clamp(2rem,2.5vw,10rem)] 
+                          >
+                            <FiZoomOut
+                              className={`text-[clamp(2rem,2.5vw,10rem)] 
                             ${scale <= 1 ? "text-gray-300/70" : "text-slate-950/70 hover:text-black/80 active:text-black/80"}
                           `}
-                          />
-                        </motion.button>
+                            />
+                          </motion.button>
+                        </div>
                       </div>
+                      <motion.div
+                        className="absolute inset-0 flex items-center justify-center"
+                        style={{ scale: scaleMv, x, y }}
+                        drag
+                        dragConstraints={{
+                          left: -200 * (scale - 1),
+                          right: 200 * (scale - 1),
+                          top: -200 * (scale - 1),
+                          bottom: 200 * (scale - 1),
+                        }}
+                        dragElastic={0.2}
+                        dragMomentum={false}
+                      >
+                        <Image
+                          src={image ? `/poster/${image}` : "/placeholder.webp"}
+                          layout="fill"
+                          objectFit="contain"
+                          alt={imageName}
+                          className="pointer-events-none select-none"
+                        />
+                      </motion.div>
                     </div>
-                    <motion.div
-                      className="absolute inset-0 flex items-center justify-center"
-                      style={{ scale: scaleMv, x, y }}
-                      drag
-                      dragConstraints={{
-                        left: -200 * (scale - 1),
-                        right: 200 * (scale - 1),
-                        top: -200 * (scale - 1),
-                        bottom: 200 * (scale - 1),
-                      }}
-                      dragElastic={0.2}
-                      dragMomentum={false}
-                    >
-                      <Image
-                        src={image ? `/poster/${image}` : "/placeholder.webp"}
-                        layout="fill"
-                        objectFit="contain"
-                        alt={imageName}
-                        className="pointer-events-none select-none"
-                      />
-                    </motion.div>
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body,
-      )}
+            )}
+          </AnimatePresence>,
+          document.body,
+        )}
     </>
   );
 }

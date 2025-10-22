@@ -9,7 +9,12 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
-import { easeInOut, motion, scale, useReducedMotion } from "framer-motion";
+import {
+  easeInOut,
+  motion,
+  cubicBezier,
+  useReducedMotion,
+} from "framer-motion";
 import type { IconType } from "react-icons";
 import { BiScan } from "react-icons/bi";
 import { IoTicketOutline } from "react-icons/io5";
@@ -34,14 +39,16 @@ function useThrottledResizeObserver(
       callback();
       timeoutRef.current = null;
     }, delay);
-  }, [callback]);
+  }, [callback, delay]);
 
   useEffect(() => {
     const elements = document.querySelectorAll(selector);
     if (!elements.length) return;
     const observer = new ResizeObserver(throttled);
     observerRef.current = observer;
-    elements.forEach((el) => observer.observe(el));
+    elements.forEach((el) => {
+      observer.observe(el);
+    });
 
     return () => {
       observer.disconnect();
@@ -65,8 +72,98 @@ export default function HomeClient() {
   });
 
   type CardKey = "scan" | "ticket" | "qr" | "graph";
-  const defTrans = { duration: 0.55, ease: [0.25, 0.1, 0.25, 1] };
-  const arrowTrans = { duration: 0.25, ease: [0.45, 0, 0.55, 1] };
+  const defTrans = useMemo(
+    () => ({ duration: 0.55, ease: cubicBezier(0.25, 0.1, 0.25, 1) }),
+    [],
+  );
+  const arrowTrans = useMemo(
+    () => ({ duration: 0.25, ease: cubicBezier(0.45, 0, 0.55, 1) }),
+    [],
+  );
+  const flyVariants = useMemo(
+    () => ({
+      up: {
+        hidden: { opacity: 0, y: 50 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.6, easeInOut },
+        },
+      },
+      upD1: {
+        hidden: { opacity: 0, y: 50 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.6, easeInOut, delay: 0.1 },
+        },
+      },
+      down: {
+        hidden: { opacity: 0, y: -50 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.6, easeInOut },
+        },
+      },
+      downD1: {
+        hidden: { opacity: 0, y: -50 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.6, easeInOut, delay: 0.1 },
+        },
+      },
+      left: {
+        hidden: { opacity: 0, x: -50, y: 40 },
+        visible: {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          transition: { duration: 0.6, easeInOut },
+        },
+      },
+      fill: {
+        hidden: { width: 0 },
+        visible: {
+          width: "100%",
+          transition: { duration: 1, easeInOut },
+        },
+      },
+      btn: {
+        hidden: { opacity: 0, y: 50, scale: 0.9 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          transition: { duration: 0.6, easeInOut },
+        },
+      },
+      dotCon: {
+        hidden: { opacity: 1 },
+        visible: {
+          opacity: 1,
+          scale: 1,
+          transition: { staggerChildren: 1 },
+        },
+      },
+      dot: {
+        hidden: { opacity: 0, scale: 1.7 },
+        visible: {
+          opacity: 1,
+          scale: 1,
+          transition: { duration: 0.8, easeInOut, delay: 0.1 },
+        },
+      },
+      btnPush: {
+        initial: { scale: 1 },
+        whileHover: { scale: 1.05, transition: { duration: 0.2, easeInOut } },
+        whileTap: { scale: 0.95, transition: { duration: 0.2, easeInOut } },
+      },
+    }),
+    [],
+  );
+
   const cards = useMemo(
     () => [
       {
@@ -151,12 +248,21 @@ export default function HomeClient() {
 
       return (
         <motion.div
-          onClick={onToggle}
+          layout
+          onClick={(e) => {
+            if ((e.target as HTMLElement).closest("button")) return;
+            onToggle();
+          }}
           initial="hidden"
           whileInView="visible"
+          whileTap={{
+            scale: 0.95,
+            filter: "brightness(0.8)",
+            transition: { duration: 0.1, ease: "easeInOut" },
+          }}
           viewport={{ once: true, amount: 0.2 }}
           variants={variant}
-          className="card flex flex-row py-1 items-center h-fit w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.25rem,0.5vw,1.25rem)] border-[#5ce1e6]"
+          className="card flex flex-row py-1 items-center h-fit w-full bg-[#2d3751] rounded-[clamp(1rem,1vw,3rem)] border-5 lg:border-[clamp(0.25rem,0.5vw,1.25rem)] border-[#5ce1e6] pointer-events-auto"
         >
           <motion.div
             aria-hidden={!expanded}
@@ -215,14 +321,23 @@ export default function HomeClient() {
                 <h4 className="font-bold text-xs lg:text-[clamp(1.1rem,1vw,5rem)] text-pretty text-justify md:ml-2 mr-2 md:mr-[clamp(2rem,8vw,8rem)] ">
                   {desc}
                 </h4>
-                <div className="flex shrink-0 align-bottom items-end h-[20%] pb-[2%] md:pb-[1%]">
-                  <button
+                <div className="flex align-bottom items-end h-[20%] pb-[2%] md:pb-[1%]">
+                  <motion.button
+                    layout
                     type="button"
-                    className="flex items-end md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] hover:text-[#48b1b4] active:text-[#48b1b4] transition-colors duration-200 active:duration-25"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      alert("Learn More")
+                    }}
+                    whileTap={{ scale: 0.95, filter: "brightness(0.8)" }}
+                    whileHover={{ scale: 0.95, filter: "brightness(0.8)" }}
+                    transition={{ duration: 0.2, ease: "easeInOut", type: "spring" }}
+                    className="flex items-end z-10 pr-3 py-1 md:ml-2 text-sm lg:text-[clamp(1rem,1.5vw,3rem)] text-[#5ce1e6] pointer-events-auto"
+                    style={{ touchAction: "manipulation" }}
                   >
                     Learn More{" "}
                     <FaArrowRight className="ml-[clamp(0.5rem,0.5vw,1.2rem)] text-lg lg:text-[clamp(1rem,2vw,4.125rem)]" />
-                  </button>
+                  </motion.button>
                 </div>
               </motion.div>
             </motion.div>
@@ -230,7 +345,7 @@ export default function HomeClient() {
         </motion.div>
       );
     });
-  }, []);
+  }, [arrowTrans, defTrans, flyVariants]);
 
   const toggleCard = (key: keyof typeof expandedCards) => {
     setExpandedCards((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -243,7 +358,6 @@ export default function HomeClient() {
     const offset = el.offsetTop - header.getBoundingClientRect().height;
     window.scrollTo({ top: offset, behavior: "smooth" });
   };
-
 
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
     loop: true,
@@ -286,98 +400,34 @@ export default function HomeClient() {
     },
   });
 
-  const flyVariants = {
-    up: {
-      hidden: { opacity: 0, y: 50 },
-      visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.6, easeInOut },
-      },
-    },
-    upD1: {
-      hidden: { opacity: 0, y: 50 },
-      visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.6, easeInOut, delay: 0.1 },
-      },
-    },
-    down: {
-      hidden: { opacity: 0, y: -50 },
-      visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.6, easeInOut },
-      },
-    },
-    downD1: {
-      hidden: { opacity: 0, y: -50 },
-      visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.6, easeInOut, delay: 0.1 },
-      },
-    },
-    left: {
-      hidden: { opacity: 0, x: -50, y: 40 },
-      visible: {
-        opacity: 1,
-        x: 0,
-        y: 0,
-        transition: { duration: 0.6, easeInOut },
-      },
-    },
-    fill: {
-      hidden: { width: 0 },
-      visible: {
-        width: "100%",
-        transition: { duration: 1, easeInOut },
-      },
-    },
-    btn: {
-      hidden: { opacity: 0, y: 50, scale: 0.9 },
-      visible: {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        transition: { duration: 0.6, easeInOut },
-      },
-    },
-    dotCon: {
-      hidden: { opacity: 1 },
-      visible: {
-        opacity: 1,
-        scale: 1,
-        transition: { staggerChildren: 1 },
-      },
-    },
-    dot: {
-      hidden: { opacity: 0, scale: 1.7 },
-      visible: {
-        opacity: 1,
-        scale: 1,
-        transition: { duration: 0.8, easeInOut, delay: 0.1 },
-      },
-    },
-  };
-
   return (
     <div className="min-h-screen contain-inline-size">
       <div className="absolute inset-0  bg-gradient-to-r from-[#7c3aed] to-[#7dd3fc]" />
       <div className="absolute inset-y-0 left-0 w-[100%] md:w-[99.9%] -skew-x-60 origin-top-left bg-gradient-to-br from-[#0b1220] to-[#1a1f2e]" />
       <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.4, ease: "easeOut", type: "spring" }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        className="fixed bottom-5 right-2 md:bottom-[clamp(0.25rem,1vw,2rem)] md:right-[clamp(0.25rem,1vw,2rem)] z-50 w-[clamp(3rem,4vw,15rem)] h-[clamp(3rem,4vw,15rem)]
-          flex items-center justify-center rounded-full bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] shadow-lg hover:shadow-2xl
-          transition-shadow cursor-pointer 
-        "
+        layout
+        initial={{
+          scale: 0,
+          opacity: 0,
+          transition: { duration: 0.4, ease: "easeOut" },
+        }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          transition: { duration: 0.4, ease: "easeOut" },
+        }}
+        variants={flyVariants.btnPush}
+        whileHover="whileHover"
+        whileTap="whileTap"
+        className="fixed bottom-5 right-2 md:bottom-[clamp(0.25rem,1vw,2rem)] md:right-[clamp(0.25rem,1vw,2rem)] z-50 
+          w-[clamp(3rem,4vw,15rem)] h-[clamp(3rem,4vw,15rem)] flex items-center justify-center rounded-full"
       >
-        <FaWhatsapp className="text-white h-[75%] w-[75%]" />
+        <div
+          className=" w-full h-full justify-center items-center bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] ease-in-out
+          shadow-lg hover:shadow-2xl hover:brightness-90 active:brightness-90 transition-all cursor-pointer rounded-full"
+        >
+          <FaWhatsapp className=" text-white w-full h-full scale-[75%]" />
+        </div>
       </motion.div>
       <section
         id="hero"
@@ -406,19 +456,37 @@ export default function HomeClient() {
           variants={flyVariants.btn}
           className="flex items-center justify-center flex-col md:flex-row gap-3 md:gap-[clamp(0rem,2.5vw,10rem)] w-full mt-[clamp(1rem,2vw,4rem)]"
         >
-          <button
-            type="button"
-            onClick={() => handleScroll("event")}
-            className="bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-[clamp(2.5rem,3vw,7rem)] w-[clamp(12.5rem,15vw,500%)] rounded-4xl text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,5rem)]"
+          <motion.div
+            layout
+            variants={flyVariants.btnPush}
+            initial="initial"
+            whileHover="whileHover"
+            whileTap="whileTap"
+            className="inline-block justify-center items-center h-[clamp(2.5rem,3vw,7rem)] w-[clamp(12.5rem,15vw,500%)] rounded-4xl"
           >
-            Daftarkan Diri
-          </button>
-          <button
-            type="button"
-            className="bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-[clamp(2.5rem,3vw,7rem)] w-[clamp(12.5rem,15vw,500%)] rounded-4xl text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,5rem)]"
+            <button
+              type="button"
+              onClick={() => handleScroll("event")}
+              className="bg-gradient-to-r w-full h-full rounded-4xl from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,5rem)]"
+            >
+              Daftarkan Diri
+            </button>
+          </motion.div>
+          <motion.div
+            layout
+            variants={flyVariants.btnPush}
+            initial="initial"
+            whileHover="whileHover"
+            whileTap="whileTap"
+            className="inline-block justify-center items-center h-[clamp(2.5rem,3vw,7rem)] w-[clamp(12.5rem,15vw,500%)] rounded-4xl"
           >
-            Daftarkan Event
-          </button>
+            <button
+              type="button"
+              className="bg-gradient-to-r w-full h-full rounded-4xl from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,5rem)]"
+            >
+              Daftarkan Event
+            </button>
+          </motion.div>
         </motion.div>
       </section>
       <section id="event" className="relative z-10 md:mt-10 lg:mx-2">
@@ -445,7 +513,7 @@ export default function HomeClient() {
             />
           </motion.div>
         </div>
-        <div className="navigation-wrapper relative mt-[clamp(2.25rem,3vw,3rem)] px-[clamp(1.5rem,4vw,3000rem)]">
+        <div className="navigation-wrapper relative mt-[clamp(2.25rem,3vw,3rem)] px-[clamp(1.5rem,4vw,3000rem)] overflow-hidden">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -515,8 +583,8 @@ export default function HomeClient() {
                 type="button"
                 onClick={() => instanceRef.current?.moveToIdx(idx)}
                 className={`w-[clamp(1rem,1.25vw,1.75rem)] h-[clamp(1rem,1.25vw,1.75rem)] rounded-full ${currSlide === idx
-                    ? "bg-orange-500 hover:bg-orange-600 active:bg-orange-600"
-                    : "bg-black/40 hover:bg-black/60 active:bg-orange-600"
+                  ? "bg-orange-500 hover:bg-orange-600 active:bg-orange-600"
+                  : "bg-black/40 hover:bg-black/60 active:bg-orange-600"
                   } transition-colors duration-200 active:duration-75`}
               />
             ))}
@@ -540,12 +608,21 @@ export default function HomeClient() {
           variants={flyVariants.btn}
           className="flex w-full items-center justify-center"
         >
-          <button
-            type="button"
-            className="mt-5 bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-[clamp(2.5rem,3vw,10rem)] w-[clamp(13.5rem,15vw,35rem)] text-[clamp(1.125rem,1vw,15rem)] rounded-[clamp(0.75rem,2vw,1rem)] text-shadow-md font-semibold text-lg"
+          <motion.div
+            layout
+            variants={flyVariants.btnPush}
+            initial="initial"
+            whileHover="whileHover"
+            whileTap="whileTap"
+            className="mt-5 inline-block justify-center items-center h-[clamp(2.5rem,3vw,10rem)] w-[clamp(13.5rem,15vw,35rem)] rounded-[clamp(0.75rem,2vw,1rem)]"
           >
-            Lihat Semua Event
-          </button>
+            <button
+              type="button"
+              className=" bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 w-full h-full text-[clamp(1.125rem,1vw,15rem)] rounded-[clamp(0.75rem,2vw,1rem)] text-shadow-md font-semibold text-lg"
+            >
+              Lihat Semua Event
+            </button>
+          </motion.div>
         </motion.div>
       </section>
       <section
@@ -589,12 +666,21 @@ export default function HomeClient() {
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.btn}
             >
-              <button
-                type="button"
-                className="mt-5 bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-[clamp(2.5rem,3vw,10rem)] w-[clamp(13.5rem,15vw,500rem)] text-[clamp(1.125rem,1vw,15rem)] rounded-[clamp(0.75rem,2vw,1rem)] text-shadow-md font-semibold text-lg"
+              <motion.div
+                layout
+                variants={flyVariants.btnPush}
+                initial="initial"
+                whileHover="whileHover"
+                whileTap="whileTap"
+                className="mt-5 inline-block justify-center items-center h-[clamp(2.5rem,3vw,10rem)] w-[clamp(13.5rem,15vw,500rem)] rounded-[clamp(0.75rem,2vw,1rem)]"
               >
-                Daftarkan Event Anda
-              </button>
+                <button
+                  type="button"
+                  className="bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-full w-full text-[clamp(1.125rem,1vw,15rem)] rounded-[clamp(0.75rem,2vw,1rem)] text-shadow-md font-semibold text-lg"
+                >
+                  Daftarkan Event Anda
+                </button>
+              </motion.div>
             </motion.div>
           </div>
         </div>
@@ -622,7 +708,8 @@ export default function HomeClient() {
             variants={flyVariants.up}
             className="text-[clamp(1.75rem,2.1vw,85px)] text-shadow-md lg:text-shadow-lg text-shadow-black/60 text-center font-semibold whitespace-normal break-words leading-none"
           >
-            FREQUENTLY ASKED QUESTION
+            FREQUENTLY {""}
+            <span className="whitespace-nowrap">ASKED QUESTION</span>
           </motion.h2>
           <motion.div
             initial="hidden"
@@ -656,7 +743,7 @@ export default function HomeClient() {
               RQRI.ID adalah aplikasi yang didirikan untuk membantu event yang
               bersifat Member-Only dalam memastikan partisipan yang memasuki
               area event merupakan partisipan terdaftar dan mengurangi resiko
-              overflowded yang disebabkan oleh jumlah partisipan melebihi
+              overcrowded yang disebabkan oleh jumlah partisipan melebihi
               kapasitas pengunjung yang sudah disiapkan oleh penyelengara.
             </motion.p>
             <motion.h3
@@ -692,22 +779,21 @@ export default function HomeClient() {
             variants={flyVariants.up}
             className="text-[clamp(1.75rem,2.1vw,85px)] text-shadow-md lg:text-shadow-lg text-shadow-black/60 text-center font-semibold whitespace-normal break-words leading-none"
           >
-            HUBUNGI KAMI{" "}
-            <span className="whitespace-nowrap">MELALUI EMAIL</span>
+            HUBUNGI KAMI
           </motion.h2>
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={flyVariants.up}
-            className="flex h-[clamp(0.4rem,0.5vw,1.2rem)] w-[clamp(14.25rem,35vw,83.75rem)] rounded-3xl bg-black/10 overflow-hidden"
+            className="flex h-[clamp(0.4rem,0.5vw,1.2rem)] w-[clamp(14.25rem,25vw,53.75rem)] rounded-3xl bg-black/10 overflow-hidden"
           >
             <motion.div
               variants={flyVariants.fill}
               className="h-full bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-3xl"
             />
           </motion.div>
-          <div className="flex w-[95%] md:w-[80%] h-fit">
+          <div className="flex w-[95%] md:w-[80%] h-fit mt-2 md:mt-[1%]">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -747,15 +833,15 @@ export default function HomeClient() {
                       <motion.button
                         key={label}
                         type="button"
-                        whileTap={{ scale: 0.95 }}
-                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95, filter: "brightness(0.8)" }}
+                        whileHover={{ scale: 1.05, filter: "brightness(0.95)" }}
                         onClick={() => setSubject(label)}
-                        transition={{ type: "spring" }}
-                        className={`px-[clamp(0.5rem,1.5vw,1.25rem)] py-[clamp(0.4rem,0.6vw,0.6rem)] ease-in-out
-                          rounded-full border text-[clamp(0.75rem,1vw,1rem)] font-bold transition-all
+                        transition={{ type: "spring", duration: 0.4, ease: "easeInOut" }}
+                        className={`px-[clamp(0.5rem,1.5vw,1.25rem)] py-[clamp(0.4rem,0.6vw,0.6rem)]
+                          rounded-full border text-[clamp(0.75rem,1vw,1rem)] font-bold
                           ${subject === label
                             ? "bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] text-white shadow-md"
-                            : "border-gray-300 text-gray-700 hover:border-[#f0945b]"
+                            : "border-gray-300 bg-white text-gray-700 hover:border-[#f0945b]"
                           }`}
                       >
                         {label}
@@ -770,13 +856,22 @@ export default function HomeClient() {
                   required={true}
                   className="md:w-full text-[clamp(0.8rem,1.35vw,3rem)] border rounded mt-1 p-[clamp(0.625rem,0.5vw,0.75rem)] text-black"
                 />
-                <div className="flex w-full justify-center items-center">
-                  <button
-                    type="submit"
-                    className="px-[clamp(1rem,1.2vw,1.5rem)] py-1 md:py-[clamp(0.1rem,0.75vh,2rem)] md:text-[clamp(1rem,1.5vw,5rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-white font-bold"
+                <div className="flex w-full justify-center items-center mt-[1%]">
+                  <motion.div
+                    layout
+                    variants={flyVariants.btnPush}
+                    initial="initial"
+                    whileHover="whileHover"
+                    whileTap="whileTap"
+                    className=" inline-block justify-center items-center rounded-[clamp(0.25rem,0.5vw,1rem)]"
                   >
-                    Kirimkan
-                  </button>
+                    <button
+                      type="submit"
+                      className=" px-[clamp(1rem,1.2vw,1.5rem)] py-1 md:py-[clamp(0.1rem,0.75vh,2rem)] w-full h-full md:text-[clamp(1rem,1.5vw,5rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-white font-bold"
+                    >
+                      Kirimkan
+                    </button>
+                  </motion.div>
                 </div>
               </form>
             </motion.div>
@@ -793,13 +888,18 @@ function Arrow(props: { left?: boolean; onClick: (e: any) => void }) {
       id="event"
       initial={{ opacity: 0, x: props.left ? -50 : 50 }}
       animate={{ opacity: 1, x: 0 }}
+      whileTap={{
+        scale: 1.25,
+        x: props.left ? 0.5 : -0.5,
+        transition: { duration: 0.2, ease: "linear", type: "tween" },
+      }}
       transition={{ duration: 0.4, ease: "easeInOut", delay: 0.1 }}
       viewport={{ once: true, amount: 0.2 }}
       type="button"
       onClick={props.onClick}
-      className={`
-        absolute flex shrink-0 top-1/2 z-20 -translate-y-1/2 py-10 md:py-2 md:px-10 lg:px-0 font-bold text-white/70 hover:text-white active:text-white bg-black/20 lg:bg-black/0 active:bg-black/30 lg:active:bg-black/0
-        transition-colors duration-100 active:duration-75 text-[clamp(5rem,6vw,12rem)] md:w-[5%] justify-center items-center text-shadow-md
+      className={`overflow-hidden bg-radial from-black/50 from-5% to-black/0 lg:bg-none active:bg-black/30 lg:active:bg-black/0 rounded-full
+        absolute flex shrink-0 top-1/2 z-20 -translate-y-1/2 py-10 md:py-2 md:px-10 lg:px-0 font-bold text-white/70 hover:text-white active:text-white 
+        text-[clamp(5rem,6vw,12rem)] md:w-[5%] justify-center items-center text-shadow-md
       ${props.left
           ? "left-0 md:left-20 lg:-left-2 "
           : "right-0 md:right-20 lg:-right-2"

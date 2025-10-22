@@ -44,7 +44,11 @@ export default function EventCard({ title, image }: ECardProps) {
           ""
         ) : (
           <div className="absolute top-0 bg-gray z-60 w-full h-full object-contain justify-center items-center">
-            <ExpandImage imageName={`Poster ${title}`} image={image} FABmode={false} />
+            <ExpandImage
+              imageName={`Poster ${title}`}
+              image={image}
+              FABmode={false}
+            />
           </div>
         )}
         {isLoading ? (
@@ -61,7 +65,11 @@ export default function EventCard({ title, image }: ECardProps) {
           >
             {isTouch ? (
               <div className="absolute z-50 -top-1 -right-1 md:-top-2 md:-right-2">
-                <ExpandImage imageName={`Poster ${title}`} image={image} FABmode={true} />
+                <ExpandImage
+                  imageName={`Poster ${title}`}
+                  image={image}
+                  FABmode={true}
+                />
               </div>
             ) : (
               ""
