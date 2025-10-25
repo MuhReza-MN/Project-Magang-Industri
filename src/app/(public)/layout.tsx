@@ -1,8 +1,8 @@
-import "./globals.css";
+import "@/styles/public.css";
 import Navbar from "@/components/navbar/NavBar";
 import Image from "next/image";
 
-export default function RootLayout({
+export default function HomeLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

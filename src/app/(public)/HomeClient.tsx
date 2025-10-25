@@ -484,7 +484,7 @@ export default function HomeClient() {
               type="button"
               className="bg-gradient-to-r w-full h-full rounded-4xl from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,5rem)]"
             >
-              Daftarkan Event
+              Ajukan Event
             </button>
           </motion.div>
         </motion.div>
@@ -678,7 +678,7 @@ export default function HomeClient() {
                   type="button"
                   className="bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-full w-full text-[clamp(1.125rem,1vw,15rem)] rounded-[clamp(0.75rem,2vw,1rem)] text-shadow-md font-semibold text-lg"
                 >
-                  Daftarkan Event Anda
+                  Ajukan Event Anda
                 </button>
               </motion.div>
             </motion.div>

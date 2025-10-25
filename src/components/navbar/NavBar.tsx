@@ -206,7 +206,7 @@ export default function Navbar({ onNavigate }: NavBarProps) {
               hover:opacity-90 transition-opacity duration-200 md:ml-[clamp(0.1rem,1vw,2rem)] md:px-[clamp(0.75rem,1vw,2rem)]
               md:bg-gradient-to-r md:from-[#eb4b3f] md:to-[#f0945b] md:py-[clamp(0.2rem,0.4vw,1.2rem)] rounded"
           >
-            Daftarkan Event
+            Ajukan Event
           </motion.button>
         </li>
       </ul>
@@ -311,7 +311,7 @@ export default function Navbar({ onNavigate }: NavBarProps) {
                       className="text-left w-full py-2 pl-2 font-semibold text-gray-200 bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-s 
                       hover:opacity-90 active:opacity-70 transition-colors duration-75 active:duration-5"
                     >
-                      Daftarkan Event
+                      Ajukan Event
                     </button>
                   </motion.div>
                 </li>
