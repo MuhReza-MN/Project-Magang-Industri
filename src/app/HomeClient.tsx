@@ -629,7 +629,7 @@ export default function HomeClient() {
         id="about"
         className="relative z-10 mt-10 py-4 bg-black/70 flex flex-col items-center basis-full px-[clamp(0.75rem,2vw,500rem)]"
       >
-        <div className="flex flex-col gap-3 w-full">
+        <div className="flex flex-col gap-3 md:gap-[clamp(0.5rem,1vh,1.2rem)] w-full">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -637,10 +637,10 @@ export default function HomeClient() {
             variants={flyVariants.up}
             className="flex flex-col gap-1"
           >
-            <h3 className=" text-red-600 text-[clamp(1.875rem,3vw,6rem)] text-shadow-md text-center font-semibold">
+            <h3 className=" text-red-600 text-[clamp(1.875rem,3vw,8rem)] text-shadow-md text-center font-semibold">
               I N T R O D U C T I O N
             </h3>
-            <h2 className="text-shadow-md text-[clamp(1.875rem,2.5vw,6rem)] font-bold text-center md:text-start">
+            <h2 className="text-shadow-md text-[clamp(1.875rem,2.5vw,6rem)] md:px-[clamp(5rem,9vw,50rem)] font-bold text-center md:text-start">
               APA ITU RQRE.ID ?
             </h2>
           </motion.div>
@@ -649,7 +649,7 @@ export default function HomeClient() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={flyVariants.up}
-            className="text-shadow-md text-[clamp(1rem,1.3vw,3rem)] font-medium text-pretty text-justify px-3 lg:px-8 "
+            className="text-shadow-md text-[clamp(1rem,1.3vw,3rem)] font-medium text-pretty text-justify px-3 md:px-[clamp(5rem,11vw,50rem)] "
           >
             RQRE.ID adalah aplikasi yang dirancang untuk membantu Event
             Organizer dalam menyelenggarakan acara ekslusif bagi partisipan
@@ -684,7 +684,7 @@ export default function HomeClient() {
             </motion.div>
           </div>
         </div>
-        <div className="flex flex-col gap-4 lg:gap-6 w-full md:w-[98%] 2xl:w-[80%]">
+        <div className="flex flex-col gap-4 lg:gap-6 w-full md:px-[clamp(5rem,9vw,50rem)]">
           {cards.map((c) => (
             <InfoCard
               key={c.id}
@@ -699,7 +699,7 @@ export default function HomeClient() {
           ))}
         </div>
       </section>
-      <section id="faq" className="relative bg-gray-900 w-full z-10 pt-5 pb-10">
+      <section id="faq" className="relative bg-gray-900 w-full z-10 pt-[3%] pb-[3%]">
         <div className="flex flex-col gap-[clamp(0.5rem,1vw,1.5rem)] items-center-safe justify-center">
           <motion.h2
             initial="hidden"
@@ -723,13 +723,13 @@ export default function HomeClient() {
               className="h-full bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-3xl"
             />
           </motion.div>
-          <div className="flex flex-col justify-center w-full sm:px-10 md:px-[clamp(5rem,11vw,50rem)]  text-left">
+          <div className="flex flex-col justify-center w-full text-left">
             <motion.h3
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.left}
-              className="text-red-600 text-[clamp(1.5rem,2.25vw,6.5rem)] text-shadow-md font-semibold pl-2 lg:pl-0"
+              className="text-red-600 text-[clamp(1.5rem,2.25vw,6.5rem)] text-shadow-md font-semibold px-2 md:px-[clamp(6rem,11vw,50rem)]"
             >
               Apa itu RQRE.ID ?
             </motion.h3>
@@ -738,7 +738,7 @@ export default function HomeClient() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.upD1}
-              className="pl-4 pr-5 lg:pl-5 lg:pr-10 text-pretty text-justify text-[clamp(1rem,1vw,3.25rem)]"
+              className="px-5.5 md:px-[clamp(6.5rem,13vw,50rem)] text-pretty text-justify text-[clamp(1rem,1vw,3.25rem)]"
             >
               RQRI.ID adalah aplikasi yang didirikan untuk membantu event yang
               bersifat Member-Only dalam memastikan partisipan yang memasuki
@@ -751,7 +751,7 @@ export default function HomeClient() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.left}
-              className="text-red-600 text-[clamp(1.5rem,2.25vw,6.5rem)] text-shadow-md mt-3 font-semibold pl-2 lg:pl-0 leading-7 lg:leading-normal"
+              className="text-red-600 text-[clamp(1.5rem,2.25vw,6.5rem)] text-shadow-md mt-3 font-semibold px-2 md:px-[clamp(6rem,11vw,50rem)] leading-7 lg:leading-normal"
             >
               Kenapa harus menggunakan RQRE.ID ?
             </motion.h3>
@@ -760,7 +760,7 @@ export default function HomeClient() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={flyVariants.upD1}
-              className="pl-4 pr-5 lg:pl-5 lg:pr-10 text-pretty text-justify text-[clamp(1rem,1vw,3.25rem)]"
+              className="px-5.5 md:px-[clamp(6.5rem,13vw,50rem)] text-pretty text-justify text-[clamp(1rem,1vw,3.25rem)]"
             >
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras
               laoreet iaculis maximus. Nam tristique diam quis odio scelerisque
@@ -793,7 +793,7 @@ export default function HomeClient() {
               className="h-full bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-3xl"
             />
           </motion.div>
-          <div className="flex w-[95%] md:w-[80%] h-fit mt-2 md:mt-[1%]">
+          <div className="flex w-[95%] md:w-full md:px-[clamp(6rem,11.5vw,50rem)] h-fit mt-2 md:mt-[1%]">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -807,7 +807,7 @@ export default function HomeClient() {
               <h5 className="text-gray-600 w-full font-semibold text-center md:text-start text-[clamp(0.7rem,1.35vw,3rem)]">
                 staff kami akan sebisa mungkin menjawab pertanyaan anda
               </h5>
-              <form className="flex flex-col mt-3 md:mt-[1%] px-2 md:px-0 space-y-[clamp(0.2rem,1.5vh,1.5rem)] w-full">
+              <form className="flex flex-col mt-3 md:mt-[1%] px-2 md:px-0 space-y-[clamp(0.2rem,1.5vh,3.5rem)] w-full">
                 <label className="flex flex-col font-bold text-black text-[clamp(0.8rem,1.35vw,3rem)] gap-[clamp(0rem,0.5vw,0.25rem)]">
                   Alamat Email
                   <input
@@ -822,7 +822,7 @@ export default function HomeClient() {
                   <legend className="font-bold text-black text-[clamp(0.8rem,1.35vw,3rem)] mb-[0.5%]">
                     Ingin menanyakan seputaran :
                   </legend>
-                  <div className="flex flex-wrap gap-[clamp(0.3rem,0.8vw,0.75rem)] w-full justify-center md:justify-start">
+                  <div className="flex flex-wrap gap-[clamp(0.3rem,0.5vw,2rem)] w-full justify-center md:justify-start">
                     {[
                       "Pendaftaran Event",
                       "Pendaftaran Peserta",
@@ -837,8 +837,8 @@ export default function HomeClient() {
                         whileHover={{ scale: 1.05, filter: "brightness(0.95)" }}
                         onClick={() => setSubject(label)}
                         transition={{ type: "spring", duration: 0.4, ease: "easeInOut" }}
-                        className={`px-[clamp(0.5rem,1.5vw,1.25rem)] py-[clamp(0.4rem,0.6vw,0.6rem)]
-                          rounded-full border text-[clamp(0.75rem,1vw,1rem)] font-bold
+                        className={`px-[clamp(0.5rem,1.5vw,2.5rem)] py-[clamp(0.4rem,0.6vw,0.6rem)]
+                          rounded-full border text-[clamp(0.75rem,1vw,3rem)] font-bold
                           ${subject === label
                             ? "bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] text-white shadow-md"
                             : "border-gray-300 bg-white text-gray-700 hover:border-[#f0945b]"

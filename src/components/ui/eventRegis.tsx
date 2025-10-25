@@ -332,7 +332,7 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.2, ease: "easeInOut" }}
-                  className="fixed inset-0 z-70 bg-black/50 flex items-start lg:items-center justify-center pt-[15%] md:pt-[1%] lg:pt-[1.5%]"
+                  className="fixed inset-0 z-70 bg-black/50 flex items-start lg:items-center justify-center pt-[clamp(2rem,100vh,2rem)] md:pt-[1%] lg:pt-[1.5%]"
                 >
                   <motion.button
                     type="button"
@@ -361,15 +361,15 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                   >
 
                     <div className="relative z-45 text-black rounded-xl flex flex-col items-center justify-start shadow-md bg-gray-100/70 h-full w-full p-[1%]">
-                      <h3 className="text-[6.5vw] md:text-[clamp(1.25rem,2vw,10rem)] font-bold">Aturan & Ketentuan</h3>
-                      <h3 className="text-[8vw] md:text-[clamp(2rem,3vw,25rem)] font-bold mb-[1%]">{eventName}</h3>
-                      <p className=" text-pretty text-start w-full whitespace-normal text-[4vw] md:text-[clamp(1.1rem,1.35vw,10rem)] mb-[4%] md:mb-[2%]">
+                      <h3 className="text-[clamp(1.25rem,3.5vw,1.5rem)] md:text-[clamp(1.25rem,2vw,10rem)] font-bold">Aturan & Ketentuan</h3>
+                      <h3 className="text-[clamp(2rem,4vw,20rem)] md:text-[clamp(2rem,3vw,25rem)] font-bold mb-[1%]">{eventName}</h3>
+                      <p className=" text-pretty text-start w-full whitespace-normal text-[clamp(0.8rem,2.5vw,1rem)] md:text-[clamp(1.1rem,1.35vw,10rem)] mb-[4%] md:mb-[2%]">
                         {rules.intro}
                       </p>
                       {rules.sections.map((section) => (
-                        <div key={section.id} className="mb-[2%] md:px-[2%] w-full">
-                          <h4 className="font-semibold text-[4vw] md:text-[clamp(1.1rem,1.35vw,10rem)]">{section.title}</h4>
-                          <ul className=" list-disc pl-5 text-[3vw] md:text-[clamp(0.9rem,1.25vw,10rem)]">
+                        <div key={section.id} className="mb-[3%] md:px-[2%] w-full">
+                          <h4 className="font-semibold text-[clamp(1rem,3vw,1.25rem)] md:text-[clamp(1.1rem,1.35vw,10rem)]">{section.title}</h4>
+                          <ul className=" list-disc pl-[5%] lg:pl-[2%] text-[clamp(0.8rem,2.5vw,1rem)] md:text-[clamp(0.9rem,1.25vw,10rem)]">
                             {section.items.map((item) => (
                               <li key={item.id}>{item.text}</li>
                             ))}
