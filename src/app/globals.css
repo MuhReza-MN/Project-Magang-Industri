@@ -38,3 +38,16 @@ body {
 .react-tel-input .country-list .country-name {
   margin-left: 1rem;
 }
+
+#nprogress-container {
+  pointer-events: none;
+}
+
+#nprogress-container .bar {
+  background: linear-gradient(90deg, #eb4b3f, #f0945b);
+  height: 3%;
+}
+
+#nprogress-container .peg {
+  box-shadow: 0 0 10px #eb4b3f, 0 0 5px #f0945b;
+}

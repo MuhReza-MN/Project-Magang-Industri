@@ -1,6 +1,7 @@
 import "@/styles/public.css";
 import Navbar from "@/components/navbar/NavBar";
 import Image from "next/image";
+import LoadingBar from "@/components/ui/loadingBar";
 
 export default function HomeLayout({
   children,

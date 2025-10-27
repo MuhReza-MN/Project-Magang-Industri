@@ -9,6 +9,7 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
+import { useRouter } from "next/navigation";
 import {
   easeInOut,
   motion,
@@ -217,6 +218,14 @@ export default function HomeClient() {
       const [contentH, setContentH] = useState<number>(0);
       const prefersReduced = useReducedMotion();
 
+      const router = useRouter();
+      const linkMap: Record<CardKey, string> = {
+        scan: "/detail/verifikasi",
+        ticket: "/detail/tiket",
+        qr: "/detail/assigner",
+        graph: "/detail/laporan",
+      };
+
       useLayoutEffect(() => {
         const el = contentRef.current;
         if (!el) return;
@@ -327,7 +336,7 @@ export default function HomeClient() {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      alert("Learn More")
+                      router.push(linkMap[id]);
                     }}
                     whileTap={{ scale: 0.95, filter: "brightness(0.8)" }}
                     whileHover={{ scale: 0.95, filter: "brightness(0.8)" }}
