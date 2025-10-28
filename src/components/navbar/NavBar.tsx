@@ -1,112 +1,93 @@
 /** biome-ignore-all lint/suspicious/useIterableCallbackReturn: <explanation> */
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { navItems } from "./navItems";
 
 type NavBarProps = { onNavigate?: () => void };
 
 export default function Navbar({ onNavigate }: NavBarProps) {
-  const [currSect, setCurrSect] = useState("hero");
+  const router = useRouter();
+  const pathName = usePathname();
+  const sParams = useSearchParams();
+  const [currSect, setCurrSect] = useState<string | null>("hero");
+  const [visualSect, setVisualSect] = useState<string | null>("hero");
   const [hovered, setHovered] = useState<string | null>(null);
-  const [barLeft, setBarLeft] = useState(0);
-  const [showBar, setShowBar] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLUListElement>(null);
-  const reduceMotion = useReducedMotion();
+  const scrollLockRef = useRef(false);
+
+  const isTouchDevice = typeof window !== "undefined"
+    ? window.matchMedia("(hover: none)").matches
+    : false;
+
+  const isHome = pathName === "/";
+  useEffect(() => {
+    setHovered(null);
+    if (!isHome) {
+      setCurrSect(null);
+      setVisualSect(null);
+    } else {
+      const sect = sParams.get("section");
+      if (sect) {
+        setCurrSect(sect);
+        setVisualSect(sect);
+      } else {
+        setCurrSect("hero");
+        setVisualSect("hero");
+      }
+    }
+  }, [isHome, sParams])
 
   const handleScroll = (id: string) => {
     const el = document.getElementById(id);
     const header = document.querySelector("header");
     if (!el || !header) return;
+    scrollLockRef.current = true;
     setCurrSect(id);
+
     const offset = el.offsetTop - header.getBoundingClientRect().height;
     window.scrollTo({ top: offset, behavior: "smooth" });
     onNavigate?.();
     setIsOpen(false);
+
+    setTimeout(() => {
+      scrollLockRef.current = false;
+    }, 300);
+  };
+
+  const handleNav = (id: string) => {
+    router.push(`/?section=${id}`);
+    setIsOpen(false);
   };
 
   useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
+    if (!isHome) return;
+    const section = sParams.get("section");
+    if (section) {
+      const el = document.getElementById(section);
+      if (el) {
+        const header = document.querySelector("header");
+        const offset = header
+          ? el.offsetTop - header.getBoundingClientRect().height
+          : el.offsetTop;
+        window.scrollTo({ top: offset, behavior: "smooth" });
+      }
+    }
+  }, [isHome, sParams]);
+
+  useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    let rafId: number | null = null;
-
-    const updateBar = () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const conRect = container.getBoundingClientRect();
-        const activeId = hovered || currSect;
-        const activeEl = container.querySelector<HTMLElement>(
-          `[data-id="${activeId}"]`,
-        );
-
-        if (activeEl) {
-          const activeRect = activeEl.getBoundingClientRect();
-          const barCenter =
-            activeRect.left + activeRect.width / 2 - conRect.left;
-          setBarLeft(barCenter);
-        }
-      });
-    };
-
-    const ro = new ResizeObserver(updateBar);
-    ro.observe(container);
-    Array.from(container.querySelectorAll("button[data-id]")).forEach((btn) =>
-      ro.observe(btn),
-    );
-
-    const onResize = () => updateBar();
-    window.addEventListener("resize", onResize);
-    window.addEventListener("orientationchange", onResize);
-    window.addEventListener("visibilitychange", onResize);
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", onResize);
-    }
-
-    const mo = new MutationObserver(() => {
-      const visible = !!container.offsetParent;
-      if (visible) updateBar();
-    });
-    mo.observe(container, {
-      attributes: true,
-      attributeFilter: ["style", "class"],
-    });
-
-    let stableTries = 0;
-    const waitForStableLayout = () => {
-      if (!container.offsetWidth && stableTries < 10) {
-        stableTries++;
-        requestAnimationFrame(waitForStableLayout);
-        return;
-      }
-      updateBar();
-    };
-    waitForStableLayout();
-
-    return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      ro.disconnect();
-      mo.disconnect();
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("orientationchange", onResize);
-      window.removeEventListener("visibilitychange", onResize);
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener("resize", onResize);
-      }
-    };
-  }, [currSect, hovered]);
-
-  useEffect(() => {
+    if (!isHome) return;
     const sections = navItems
       .map((n) => document.getElementById(n.id))
       .filter(Boolean);
@@ -117,7 +98,7 @@ export default function Navbar({ onNavigate }: NavBarProps) {
         const mostVisible = entries.reduce((prev, curr) =>
           curr.intersectionRatio > prev.intersectionRatio ? curr : prev,
         );
-        if (mostVisible.isIntersecting) setCurrSect(mostVisible.target.id);
+        if (!scrollLockRef.current && mostVisible.isIntersecting) setCurrSect(mostVisible.target.id);
       },
       {
         rootMargin: `-${headerHeight}px 0px 0px 0px`,
@@ -126,7 +107,7 @@ export default function Navbar({ onNavigate }: NavBarProps) {
     );
     sections.forEach((sec) => sec && observer.observe(sec));
     return () => sections.forEach((sec) => sec && observer.unobserve(sec));
-  }, []);
+  }, [isHome]);
 
   return (
     <nav aria-label="Main Navigation">
@@ -138,38 +119,39 @@ export default function Navbar({ onNavigate }: NavBarProps) {
           ${isMobile ? "opacity-0 h-0 overflow-hidden pointer-events-none" : "opacity-100 h-auto"}
         `}
       >
-        {showBar && (
-          <motion.div
-            className="absolute top-2 h-[clamp(0.2rem,0.3vw,2rem)] w-[clamp(1.25rem,3.5vw,4rem)] bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-full pointer-events-none"
-            animate={{ left: barLeft }}
-            transition={
-              reduceMotion
-                ? {}
-                : {
-                  type: "spring",
-                  stiffness: 250,
-                  damping: 24,
-                }
-            }
-            style={{ translateX: "-50%", width: "clamp(1.25rem,3.5vw,6rem)" }}
-          />
-        )}
-
         {navItems.map((item) => {
           const isActive = item.id === currSect;
           const isHovered = hovered === item.id;
 
           return (
-            <li key={item.id}>
+            <li key={item.id} className="relative">
+              <AnimatePresence>
+                {(hovered === item.id || currSect === item.id) && (
+                  <motion.div
+                    className=" absolute md:-top-[clamp(0.25rem,1vh,2rem)] left-1/2 md:h-[clamp(0.175rem,0.25vw,1rem)] md:w-[clamp(2rem,3vw,50rem)]
+                      bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-full -translate-x-1/2"
+                    initial={{ opacity: 0, scaleX: 0, y: 9 }}
+                    exit={{ opacity: 0, scaleX: 0, y: 9 }}
+                    animate={{ opacity: 1, scaleX: 1, y: 0 }}
+                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                  />
+                )}
+              </AnimatePresence>
               <motion.button
                 data-id={item.id}
                 type="button"
-                onClick={() => handleScroll(item.id)}
-                onMouseEnter={() => setHovered(item.id)}
-                onMouseLeave={() => setHovered(null)}
+                onClick={() => {
+                  setVisualSect(item.id);
+                  if (isHome) handleScroll(item.id);
+                  else handleNav(item.id);
+                }}
+                onMouseEnter={() => !isTouchDevice && setHovered(item.id)}
+                onMouseLeave={() => !isTouchDevice && setHovered(null)}
                 className={`relative font-extrabold w-full md:px-[clamp(0.75rem,1vw,2rem)] mb-3 lg:mb-0
-                  ${item.id === "hero" || item.id === "faq" ? "text-[clamp(1rem,1.2vw,5rem)] tracking-widest" : "text-[clamp(0.9rem,1.1vw,5rem)]"}
-                `}
+                  ${item.id === "hero" || item.id === "faq"
+                    ? "text-[clamp(1rem,1.2vw,5rem)] tracking-widest"
+                    : "text-[clamp(0.9rem,1.1vw,5rem)]"
+                  }`}
                 aria-current={isActive ? "page" : undefined}
               >
                 <motion.span
@@ -180,9 +162,10 @@ export default function Navbar({ onNavigate }: NavBarProps) {
                         ? "#f5f5f5"
                         : "#d1d5db",
                     opacity: isHovered || isActive ? 1 : 0.8,
-                    y: isHovered ? -1 : 0,
+                    y: isHovered ? -1.5 : 0,
+                    filter: isActive ? "brightness(1.1)" : "brightness(1)"
                   }}
-                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ type: "spring", stiffness: 180, damping: 26 }}
                 >
                   {item.label}
                 </motion.span>
@@ -287,7 +270,9 @@ export default function Navbar({ onNavigate }: NavBarProps) {
                     >
                       <button
                         type="button"
-                        onClick={() => handleScroll(item.id)}
+                        onClick={() =>
+                          isHome ? handleScroll(item.id) : handleNav(item.id)
+                        }
                         className={`text-left w-full py-1 pl-2 font-semibold text-gray-200 active:text-white border-b-2 border-slate-900/50
                         ${item.id === "hero" || item.id === "faq" ? "tracking-widest text-lg" : ""}
                       `}

@@ -1,1 +1,34 @@
 backup:
+
+const computeBarCenterForId = (id: string) => {
+    const con = containerRef.current;
+    if (!con) return null;
+    const conRect = con.getBoundingClientRect();
+    const el = con.querySelector<HTMLElement>(`[data-id="${id}"]`);
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    return r.left + r.width / 2 - conRect.left;
+  };
+
+const moveBarToId = (id: string, opts?: { instant?: boolean; show?: boolean }) => {
+    const center = computeBarCenterForId(id);
+    if (center == null) {
+      setShowBar(false);
+      return;
+    }
+
+    if (opts?.show ?? true) setShowBar(true);
+    if (opts?.instant) {
+      noTransientUpdateRef.current = true;
+      setBarLeft(center);
+      if (reenableTimeoutRef.current) window.clearTimeout(reenableTimeoutRef.current);
+      reenableTimeoutRef.current = window.setTimeout(() => {
+        noTransientUpdateRef.current = false;
+        reenableTimeoutRef.current = null;
+        const final = computeBarCenterForId(id);
+        if (final != null) setBarLeft(final);
+      }, 150);
+      return
+    }
+    setBarLeft(center);
+  };
