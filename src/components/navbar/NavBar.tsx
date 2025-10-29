@@ -19,6 +19,7 @@ export default function Navbar({ onNavigate }: NavBarProps) {
   const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLUListElement>(null);
   const scrollLockRef = useRef(false);
+  const hasLoadedRef = useRef(false);
 
   const isTouchDevice = typeof window !== "undefined"
     ? window.matchMedia("(hover: none)").matches
@@ -60,6 +61,7 @@ export default function Navbar({ onNavigate }: NavBarProps) {
   };
 
   const handleNav = (id: string) => {
+    sessionStorage.setItem("instantScroll", "true");
     router.push(`/?section=${id}`);
     setIsOpen(false);
   };
@@ -67,16 +69,31 @@ export default function Navbar({ onNavigate }: NavBarProps) {
   useEffect(() => {
     if (!isHome) return;
     const section = sParams.get("section");
-    if (section) {
-      const el = document.getElementById(section);
-      if (el) {
-        const header = document.querySelector("header");
-        const offset = header
-          ? el.offsetTop - header.getBoundingClientRect().height
-          : el.offsetTop;
-        window.scrollTo({ top: offset, behavior: "smooth" });
-      }
+    if (!section) return;
+
+    const isInstant = sessionStorage.getItem("instantScroll") === "true";
+    if (isInstant) sessionStorage.removeItem("instantScroll");
+
+    if (!isInstant && !hasLoadedRef.current) {
+      hasLoadedRef.current = true;
+      return;
     }
+
+    const header = document.querySelector("header");
+    const scrollToSect = () => {
+      const el = document.getElementById(section);
+      if (!el) {
+        requestAnimationFrame(scrollToSect);
+        return;
+      }
+      const offset = header
+        ? el.offsetTop - header.getBoundingClientRect().height
+        : el.offsetTop;
+
+      window.scrollTo({ top: offset, behavior: isInstant ? "auto" : "smooth" });
+      hasLoadedRef.current = true;
+    };
+    scrollToSect();
   }, [isHome, sParams]);
 
   useEffect(() => {
@@ -141,12 +158,18 @@ export default function Navbar({ onNavigate }: NavBarProps) {
                 data-id={item.id}
                 type="button"
                 onClick={() => {
+                  setCurrSect(item.id);
                   setVisualSect(item.id);
                   if (isHome) handleScroll(item.id);
                   else handleNav(item.id);
                 }}
                 onMouseEnter={() => !isTouchDevice && setHovered(item.id)}
-                onMouseLeave={() => !isTouchDevice && setHovered(null)}
+                onMouseLeave={() => {
+                  if (!isTouchDevice) {
+                    if (!isHome) setHovered(item.id);
+                    else setHovered(null);
+                  }
+                }}
                 className={`relative font-extrabold w-full md:px-[clamp(0.75rem,1vw,2rem)] mb-3 lg:mb-0
                   ${item.id === "hero" || item.id === "faq"
                     ? "text-[clamp(1rem,1.2vw,5rem)] tracking-widest"

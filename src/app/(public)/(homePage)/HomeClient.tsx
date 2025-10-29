@@ -19,10 +19,11 @@ import {
 import type { IconType } from "react-icons";
 import { BiScan } from "react-icons/bi";
 import { IoTicketOutline } from "react-icons/io5";
-import { AiOutlineQrcode, AiOutlineMail } from "react-icons/ai";
+import { AiOutlineQrcode } from "react-icons/ai";
 import { VscGraph } from "react-icons/vsc";
 import { FaArrowRight, FaWhatsapp } from "react-icons/fa6";
 import { FaAngleRight } from "react-icons/fa";
+import { triggerProgress } from "@/components/ui/nProgress/nProgresssTrigger";
 import EventCard from "@/components/ui/card";
 import "keen-slider/keen-slider.min.css";
 

@@ -1,7 +1,7 @@
 import "@/styles/public.css";
 import Navbar from "@/components/navbar/NavBar";
 import Image from "next/image";
-import LoadingBar from "@/components/ui/loadingBar";
+import ProgressBarPublic from "@/components/ui/nProgress/nProgressPublic";
 
 export default function HomeLayout({
   children,
@@ -11,6 +11,7 @@ export default function HomeLayout({
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
+        <ProgressBarPublic />
         <header className="sticky top-0 left-0 z-50 w-full bg-slate-900/75 text-white">
           {/* don't touch this duct-taped section, reason? it's because of some display bar animation fix */}
           <nav className="relative flex justify-between w-full overflow-hidden items-center lg:px-[clamp(0.25rem,0.75vw,2rem)] my-[0.5%] md:my-0">
@@ -23,7 +24,7 @@ export default function HomeLayout({
                 priority
               />
             </div>
-            <div className="absolute right-0 h-full -top-[50%] md:-top-0 items-center mt-0.75 md:mt-0 lg:mt-[clamp(0.1rem,0.25vw,2rem)] 2xl:mt-[0.5%]">
+            <div className="absolute right-0 xl:right-1 2xl:right-10 h-full -top-[50%] md:-top-0 items-center mt-0.75 md:mt-0 lg:mt-[clamp(0.1rem,0.25vw,2rem)] 2xl:mt-[0.5%]">
               <div className="flex shrink-0 h-full">
                 <Navbar />
               </div>
