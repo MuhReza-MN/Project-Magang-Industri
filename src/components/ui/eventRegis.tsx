@@ -23,7 +23,7 @@ type ERegisProps = {
 export default function EventRegisForm({ eventName, image }: ERegisProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [ruleAgreed, setRuleAgree] = useState(false);
-  const [notifAgreed, setNotifAgree] = useState(false);
+  //const [notifAgreed, setNotifAgree] = useState(false);
   const [showRules, setShowRules] = useState(false);
   const [phone, setPhone] = useState("");
   const [scale, setScale] = useState(1);
@@ -94,7 +94,7 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
         whileTap={{ scale: 0.95, filter: "brightness(0.8)" }}
         transition={{ duration: 0.2, ease: "easeInOut", type: "spring" }}
         onClick={() => setIsOpen(true)}
-        className="flex justify-center items-center mb-[clamp(0.5rem,0.5vw,1rem)] bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] h-[clamp(2.5rem,1.8vw,4.25rem)] w-50 lg:w-[clamp(8.75rem,8vw,18.75rem)] rounded-4xl text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,3rem)]"
+        className="flex justify-center items-center mb-[clamp(0.5rem,0.5vw,1rem)] bg-linear-to-r from-[#eb4b3f] to-[#f0945b] h-[clamp(2.5rem,1.8vw,4.25rem)] w-50 lg:w-[clamp(8.75rem,8vw,18.75rem)] rounded-4xl text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,3rem)]"
       >
         Register
       </motion.button>
@@ -196,7 +196,7 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                             initial={{ width: 0, opacity: 0.9 }}
                             animate={{ width: "100%", opacity: 1 }}
                             transition={{ duration: 0.7, ease: "easeInOut" }}
-                            className="h-full bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-3xl"
+                            className="h-full bg-linear-to-r from-[#eb4b3f] to-[#f0945b] rounded-3xl"
                           />
                         </div>
                       </div>
@@ -311,7 +311,7 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                             whileHover={{ scale: 1.05, filter: "brightness(0.95)" }}
                             whileTap={{ scale: 0.95, filter: "brightness(0.8)" }}
                             transition={{ duration: 0.2, ease: "easeInOut", type: "spring" }}
-                            className="px-[clamp(1rem,1.2vw,1.5rem)] py-[clamp(0.5rem,1vh,1rem)] text-[clamp(1rem,1.2vw,3rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] text-white font-bold"
+                            className="px-[clamp(1rem,1.2vw,1.5rem)] py-[clamp(0.5rem,1vh,1rem)] text-[clamp(1rem,1.2vw,3rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-linear-to-r from-[#eb4b3f] to-[#f0945b] text-white font-bold"
                             onClick={() => {
                               setPhone("");
                             }}
@@ -381,7 +381,7 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                         whileHover={{ scale: 1.05, filter: "brightness(0.95)" }}
                         whileTap={{ scale: 0.95, filter: "brightness(0.8)" }}
                         transition={{ duration: 0.2, ease: "easeInOut", type: "spring" }}
-                        className="px-[clamp(1rem,1.2vw,1.5rem)] py-[0.25rem] md:py-[clamp(0.5rem,1vh,1rem)] mb-[1%] mt-[2%] text-[clamp(1rem,1.2vw,3rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] text-white font-bold"
+                        className="px-[clamp(1rem,1.2vw,1.5rem)] py-1 md:py-[clamp(0.5rem,1vh,1rem)] mb-[1%] mt-[2%] text-[clamp(1rem,1.2vw,3rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-linear-to-r from-[#eb4b3f] to-[#f0945b] text-white font-bold"
                         onClick={() => {
                           setShowRules(false);
                           setRuleAgree(true);

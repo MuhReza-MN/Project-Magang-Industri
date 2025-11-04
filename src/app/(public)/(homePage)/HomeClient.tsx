@@ -23,7 +23,6 @@ import { AiOutlineQrcode } from "react-icons/ai";
 import { VscGraph } from "react-icons/vsc";
 import { FaArrowRight, FaWhatsapp } from "react-icons/fa6";
 import { FaAngleRight } from "react-icons/fa";
-import { triggerProgress } from "@/components/ui/nProgress/nProgresssTrigger";
 import EventCard from "@/components/ui/card";
 import "keen-slider/keen-slider.min.css";
 
@@ -221,10 +220,10 @@ export default function HomeClient() {
 
       const router = useRouter();
       const linkMap: Record<CardKey, string> = {
-        scan: "/detail/verifikasi",
-        ticket: "/detail/tiket",
-        qr: "/detail/assigner",
-        graph: "/detail/laporan",
+        scan: "/fitur-verifikasi",
+        ticket: "/fitur-tiket",
+        qr: "/fitur-assigner",
+        graph: "/fitur-laporan",
       };
 
       useLayoutEffect(() => {
@@ -412,8 +411,8 @@ export default function HomeClient() {
 
   return (
     <div className="min-h-screen contain-inline-size">
-      <div className="absolute inset-0  bg-gradient-to-r from-[#7c3aed] to-[#7dd3fc]" />
-      <div className="absolute inset-y-0 left-0 w-[100%] md:w-[99.9%] -skew-x-60 origin-top-left bg-gradient-to-br from-[#0b1220] to-[#1a1f2e]" />
+      <div className="absolute inset-0  bg-linear-to-r from-[#7c3aed] to-[#7dd3fc]" />
+      <div className="absolute inset-y-0 left-0 w-full md:w-[99.9%] -skew-x-60 origin-top-left bg-linear-to-br from-[#0b1220] to-[#1a1f2e]" />
       <motion.div
         layout
         initial={{
@@ -433,7 +432,7 @@ export default function HomeClient() {
           w-[clamp(3rem,4vw,15rem)] h-[clamp(3rem,4vw,15rem)] flex items-center justify-center rounded-full"
       >
         <div
-          className=" w-full h-full justify-center items-center bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] ease-in-out
+          className=" w-full h-full justify-center items-center bg-linear-to-r from-[#eb4b3f] to-[#f0945b] ease-in-out
           shadow-lg hover:shadow-2xl hover:brightness-90 active:brightness-90 transition-all cursor-pointer rounded-full"
         >
           <FaWhatsapp className=" text-white w-full h-full scale-[75%]" />
@@ -477,7 +476,7 @@ export default function HomeClient() {
             <button
               type="button"
               onClick={() => handleScroll("event")}
-              className="bg-gradient-to-r w-full h-full rounded-4xl from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,5rem)]"
+              className="bg-linear-to-r w-full h-full rounded-4xl from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,5rem)]"
             >
               Daftarkan Diri
             </button>
@@ -492,7 +491,7 @@ export default function HomeClient() {
           >
             <button
               type="button"
-              className="bg-gradient-to-r w-full h-full rounded-4xl from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,5rem)]"
+              className="bg-linear-to-r w-full h-full rounded-4xl from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-shadow-md font-semibold text-[clamp(1.125rem,1.1vw,5rem)]"
             >
               Ajukan Event
             </button>
@@ -506,7 +505,7 @@ export default function HomeClient() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={flyVariants.up}
-            className="text-[clamp(2.5rem,4vw,150px)] text-shadow-md lg:text-shadow-lg text-shadow-black/60 text-center font-semibold whitespace-normal break-words leading-none"
+            className="text-[clamp(2.5rem,4vw,150px)] text-shadow-md lg:text-shadow-lg text-shadow-black/60 text-center font-semibold whitespace-normal wrap-break-word leading-none"
           >
             ONGOING EVENT
           </motion.h2>
@@ -519,7 +518,7 @@ export default function HomeClient() {
           >
             <motion.div
               variants={flyVariants.fill}
-              className="h-full bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-3xl"
+              className="h-full bg-linear-to-r from-[#eb4b3f] to-[#f0945b] rounded-3xl"
             />
           </motion.div>
         </div>
@@ -628,7 +627,7 @@ export default function HomeClient() {
           >
             <button
               type="button"
-              className=" bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 w-full h-full text-[clamp(1.125rem,1vw,15rem)] rounded-[clamp(0.75rem,2vw,1rem)] text-shadow-md font-semibold text-lg"
+              className=" bg-linear-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 w-full h-full text-[clamp(1.125rem,1vw,15rem)] rounded-[clamp(0.75rem,2vw,1rem)] text-shadow-md font-semibold text-lg"
             >
               Lihat Semua Event
             </button>
@@ -686,7 +685,7 @@ export default function HomeClient() {
               >
                 <button
                   type="button"
-                  className="bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-full w-full text-[clamp(1.125rem,1vw,15rem)] rounded-[clamp(0.75rem,2vw,1rem)] text-shadow-md font-semibold text-lg"
+                  className="bg-linear-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 h-full w-full text-[clamp(1.125rem,1vw,15rem)] rounded-[clamp(0.75rem,2vw,1rem)] text-shadow-md font-semibold text-lg"
                 >
                   Ajukan Event Anda
                 </button>
@@ -716,7 +715,7 @@ export default function HomeClient() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={flyVariants.up}
-            className="text-[clamp(1.75rem,2.1vw,85px)] text-shadow-md lg:text-shadow-lg text-shadow-black/60 text-center font-semibold whitespace-normal break-words leading-none"
+            className="text-[clamp(1.75rem,2.1vw,85px)] text-shadow-md lg:text-shadow-lg text-shadow-black/60 text-center font-semibold whitespace-normal wrap-break-word leading-none"
           >
             FREQUENTLY {""}
             <span className="whitespace-nowrap">ASKED QUESTION</span>
@@ -730,7 +729,7 @@ export default function HomeClient() {
           >
             <motion.div
               variants={flyVariants.fill}
-              className="h-full bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-3xl"
+              className="h-full bg-linear-to-r from-[#eb4b3f] to-[#f0945b] rounded-3xl"
             />
           </motion.div>
           <div className="flex flex-col justify-center w-full text-left">
@@ -787,7 +786,7 @@ export default function HomeClient() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={flyVariants.up}
-            className="text-[clamp(1.75rem,2.1vw,85px)] text-shadow-md lg:text-shadow-lg text-shadow-black/60 text-center font-semibold whitespace-normal break-words leading-none"
+            className="text-[clamp(1.75rem,2.1vw,85px)] text-shadow-md lg:text-shadow-lg text-shadow-black/60 text-center font-semibold whitespace-normal wrap-break-word leading-none"
           >
             HUBUNGI KAMI
           </motion.h2>
@@ -800,7 +799,7 @@ export default function HomeClient() {
           >
             <motion.div
               variants={flyVariants.fill}
-              className="h-full bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-3xl"
+              className="h-full bg-linear-to-r from-[#eb4b3f] to-[#f0945b] rounded-3xl"
             />
           </motion.div>
           <div className="flex w-[95%] md:w-full md:px-[clamp(6rem,11.5vw,50rem)] h-fit mt-2 md:mt-[1%]">
@@ -850,7 +849,7 @@ export default function HomeClient() {
                         className={`px-[clamp(0.5rem,1.5vw,2.5rem)] py-[clamp(0.4rem,0.6vw,0.6rem)]
                           rounded-full border text-[clamp(0.75rem,1vw,3rem)] font-bold
                           ${subject === label
-                            ? "bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] text-white shadow-md"
+                            ? "bg-linear-to-r from-[#eb4b3f] to-[#f0945b] text-white shadow-md"
                             : "border-gray-300 bg-white text-gray-700 hover:border-[#f0945b]"
                           }`}
                       >
@@ -877,7 +876,7 @@ export default function HomeClient() {
                   >
                     <button
                       type="submit"
-                      className=" px-[clamp(1rem,1.2vw,1.5rem)] py-1 md:py-[clamp(0.1rem,0.75vh,2rem)] w-full h-full md:text-[clamp(1rem,1.5vw,5rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-white font-bold"
+                      className=" px-[clamp(1rem,1.2vw,1.5rem)] py-1 md:py-[clamp(0.1rem,0.75vh,2rem)] w-full h-full md:text-[clamp(1rem,1.5vw,5rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-linear-to-r from-[#eb4b3f] to-[#f0945b] hover:brightness-90 active:brightness-90 transition-all duration-300 active:duration-25 text-white font-bold"
                     >
                       Kirimkan
                     </button>

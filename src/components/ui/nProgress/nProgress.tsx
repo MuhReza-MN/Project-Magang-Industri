@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import nProgress from "nprogress";
 import { applyNPTheme } from "@/styles/nProgress/np-applyTheme";
-import { nPThemePublic } from "@/styles/nProgress/nP-theme";
+import { npThemes } from "@/styles/nProgress/np-themes";
 import "@/styles/nProgress/nprogress.css";
 
 nProgress.configure({
@@ -14,15 +14,23 @@ nProgress.configure({
   easing: "ease",
 });
 
-export default function ProgressBarPublic() {
+type ProgressBarProps = {
+  theme?: keyof typeof npThemes;
+}
+
+export default function ProgressBar({ theme = "default" }: ProgressBarProps) {
   const pathname = usePathname();
+  const sParams = useSearchParams();
   const router = useRouter();
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const originalPush = useRef<typeof router.push | null>(null)
   const originalReplace = useRef<typeof router.push | null>(null)
 
   useEffect(() => {
-    applyNPTheme(nPThemePublic);
+    applyNPTheme(npThemes[theme]);
+  }, [theme]);
+
+  useEffect(() => {
     nProgress.start();
 
     const finishProgress = () => {
@@ -30,16 +38,14 @@ export default function ProgressBarPublic() {
       timerRef.current = setTimeout(() => nProgress.done(), 400);
     };
 
-    if (document.readyState === "complete") {
-      finishProgress();
-    } else {
-      window.addEventListener("load", finishProgress);
-    }
+    if (document.readyState === "complete") finishProgress();
+    else window.addEventListener("load", finishProgress);
+
 
     return () => {
       window.removeEventListener("load", finishProgress);
       if (timerRef.current) clearTimeout(timerRef.current);
-      nProgress.start();
+      nProgress.done();
     };
   }, []);
 
@@ -77,15 +83,13 @@ export default function ProgressBarPublic() {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      nProgress.done()
-    }, 400);
+    timerRef.current = setTimeout(() => nProgress.done(), 400);
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
-      nProgress.done()
+      nProgress.done();
     };
-  }, [pathname]);
+  }, [pathname, sParams]);
 
   return null;
 }

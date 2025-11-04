@@ -12,10 +12,12 @@
   "dependencies": {
     "@bprogress/next": "^3.2.12",
     "@floating-ui/react": "^0.27.16",
+    "@next-font/plugin-vite": "^1.4.0",
     "chart.js": "^4.5.0",
     "framer-motion": "^12.23.16",
     "keen-slider": "^6.8.6",
     "next": "15.5.3",
+    "next-font": "^1.2.0",
     "next-seo": "^6.8.0",
     "nprogress": "^0.2.0",
     "qr-code-styling": "^1.9.2",
@@ -37,7 +39,9 @@
     "@types/nprogress": "^0.2.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "tailwindcss": "^4",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.16",
     "typescript": "^5"
   }
 }

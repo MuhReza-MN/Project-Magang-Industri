@@ -1,8 +1,8 @@
 /** biome-ignore-all lint/suspicious/useIterableCallbackReturn: <explanation> */
 "use client";
 
-import { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { navItems } from "./navItems";
 
@@ -146,7 +146,7 @@ export default function Navbar({ onNavigate }: NavBarProps) {
                 {(hovered === item.id || currSect === item.id) && (
                   <motion.div
                     className=" absolute md:-top-[clamp(0.25rem,1vh,2rem)] left-1/2 md:h-[clamp(0.175rem,0.25vw,1rem)] md:w-[clamp(2rem,3vw,50rem)]
-                      bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-full -translate-x-1/2"
+                      bg-linear-to-r from-[#eb4b3f] to-[#f0945b] rounded-full -translate-x-1/2"
                     initial={{ opacity: 0, scaleX: 0, y: 9 }}
                     exit={{ opacity: 0, scaleX: 0, y: 9 }}
                     animate={{ opacity: 1, scaleX: 1, y: 0 }}
@@ -210,7 +210,7 @@ export default function Navbar({ onNavigate }: NavBarProps) {
             }}
             className="relative justify-center items-center text-white font-extrabold text-[clamp(0.9rem,1.1vw,5rem)] mb-3 lg:mb-0
               hover:opacity-90 transition-opacity duration-200 md:ml-[clamp(0.1rem,1vw,2rem)] md:px-[clamp(0.75rem,1vw,2rem)]
-              md:bg-gradient-to-r md:from-[#eb4b3f] md:to-[#f0945b] md:py-[clamp(0.2rem,0.4vw,1.2rem)] rounded"
+              md:bg-linear-to-r md:from-[#eb4b3f] md:to-[#f0945b] md:py-[clamp(0.2rem,0.4vw,1.2rem)] rounded"
           >
             Ajukan Event
           </motion.button>
@@ -316,7 +316,7 @@ export default function Navbar({ onNavigate }: NavBarProps) {
                     <button
                       type="button"
                       onClick={() => alert("coming soon")}
-                      className="text-left w-full py-2 pl-2 font-semibold text-gray-200 bg-gradient-to-r from-[#eb4b3f] to-[#f0945b] rounded-s 
+                      className="text-left w-full py-2 pl-2 font-semibold text-gray-200 bg-linear-to-r from-[#eb4b3f] to-[#f0945b] rounded-s 
                       hover:opacity-90 active:opacity-70 transition-colors duration-75 active:duration-5"
                     >
                       Ajukan Event
