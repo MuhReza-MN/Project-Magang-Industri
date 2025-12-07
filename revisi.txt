@@ -1,1 +1,7 @@
 backup:
+
+<div className="flex grow justify-center items-center relative">
+          <RotatePrompt>
+            <main className="flex grow justify-center items-center relative">{children}</main>
+          </RotatePrompt>
+        </div>
