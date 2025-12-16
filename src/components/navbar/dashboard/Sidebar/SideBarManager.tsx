@@ -1,11 +1,12 @@
-"use client";
 
-import { usePathname } from "next/navigation";
 import Sidebar from "./Sidebar";
+import { SidebarUser } from "./Sidebar.types";
 
-export default function SidebarManager() {
-  const pathName = usePathname() || "";
-  const isDashboardHome = pathName === "/dashboard" || pathName === "/dashboard/";
+type SidebarManagerProps = {
+  user: SidebarUser;
+};
 
-  return <Sidebar canShrink={isDashboardHome} expanded={true} />
+export default function SidebarManager({ user }: SidebarManagerProps) {
+
+  return <Sidebar user={user} canShrink expanded />
 }

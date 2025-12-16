@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import DashboardView from "./dashboard";
+import DashboardView from "./event-list/dashboard";
 
 export const metadata: Metadata = {
   title: "RQRE.ID",
@@ -7,5 +7,4 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardPage() {
-  return <DashboardView />
 }

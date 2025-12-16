@@ -5,5 +5,5 @@ export const metadata: Metadata = {
   description: "Situs pendaftaran event khusus member-only",
 };
 
-export default function RegisterPage() {
+export default function SettingsPage() {
 }

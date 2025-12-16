@@ -1,0 +1,158 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id      String  @id @default(cuid())
+  email   String  @unique
+  contact String?
+  name    String?
+
+  // SUPERADMIN | ADMIN | EO
+  role String @default("SUPERADMIN")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdEvents Event[] @relation("EventCreator")
+  handledEvents Event[] @relation("EventEO")
+
+  emailVerified Boolean   @default(false)
+  sessions      Session[]
+  accounts      Account[]
+
+  image  String?
+  events Event[]
+
+  @@map("User")
+}
+
+model Event {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+
+  // UNAPPROVED | UPCOMING | JOINABLE | ONGOING | CLOSED | FINISHED | CANCELLED
+  status String @default("UNAPPROVED")
+
+  eventCode   String  @unique
+  posterImage String?
+
+  // JSON stored as string
+  details String
+
+  startAt DateTime
+  endAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdById String
+  createdBy   User   @relation("EventCreator", fields: [createdById], references: [id])
+
+  eoId String
+  eo   User   @relation("EventEO", fields: [eoId], references: [id])
+
+  participants Participant[]
+  presentLogs  PresentLog[]
+  user         User?         @relation(fields: [userId], references: [id])
+  userId       String?
+}
+
+model Participant {
+  id      String  @id @default(cuid())
+  email   String
+  name    String?
+  contact String?
+
+  status String @default("REGISTERED")
+
+  createdAt DateTime @default(now())
+
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id])
+
+  presentLogs PresentLog[]
+
+  @@unique([email, eventId])
+}
+
+model PresentLog {
+  id        String   @id @default(cuid())
+  scannedAt DateTime @default(now())
+
+  participantId String
+  participant   Participant @relation(fields: [participantId], references: [id])
+
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id])
+
+  @@index([participantId])
+  @@index([eventId])
+}
+
+model BukuTamu {
+  id          String    @id @default(cuid())
+  email       String
+  pesan       String
+  emailedTime DateTime?
+  status      String
+
+  createdAt DateTime @default(now())
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}

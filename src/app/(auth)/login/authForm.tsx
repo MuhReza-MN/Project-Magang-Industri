@@ -3,8 +3,36 @@ import { motion } from "framer-motion";
 import { logoFont } from "@/lib/fonts";
 import { useState } from "react";
 
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+
 export default function AuthForm() {
   const [rememberMe, setRemember] = useState(false);
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const result = await authClient.signIn.email({
+      email,
+      password,
+    });
+
+    setLoading(false);
+
+    if (result.error) {
+      setError(result.error.message);
+      return;
+    }
+
+    router.push("/dashboard");
+  }
 
   return (
     <section id="login"
@@ -22,12 +50,17 @@ export default function AuthForm() {
         >
           RQRE.ID
         </h1>
-        <form className="flex flex-col space-y-[clamp(0.1rem,1vh,8rem)] h-full w-full justify-start xl:mr-[2%]">
+        <form
+          onSubmit={handleLogin}
+          className="flex flex-col space-y-[clamp(0.1rem,1vh,8rem)] h-full w-full justify-start xl:mr-[2%]"
+        >
           <label className="flex flex-col font-bold text-black text-[clamp(0.9rem,0.8vw,2.5rem)] gap-[clamp(0rem,0.5vw,0.25rem)]">
             Email
             <input
               type="email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="md:w-full border rounded mt-1 p-[clamp(0.5rem,0.5vw,0.75rem)] text-black"
             />
           </label>
@@ -36,14 +69,18 @@ export default function AuthForm() {
             <input
               type="password"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="md:w-full border rounded mt-1 p-[clamp(0.5rem,0.5vw,0.75rem)] text-black"
             />
           </label>
+          {error && (
+            <p className="text-red-600 text-sm font-semibold">{error}</p>
+          )}
           <label className="flex items-center gap-[2%] mt-[3%] w-full h-fit">
             <motion.input
               type="checkbox"
               checked={rememberMe}
-              required
               initial={{ scale: 1 }}
               whileHover={{ scale: 1.05, filter: "brightness(1.5)" }}
               whileTap={{ scale: 0.95, filter: "brightness(0.8)" }}
@@ -60,7 +97,6 @@ export default function AuthForm() {
               whileTap={{ filter: "brightness(1.8)" }}
               transition={{ duration: 0.2, ease: "easeInOut", type: "spring" }}
               className="text-[clamp(0.7rem,1vw,2rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] text-gray-600 underline underline-offset-2 font-bold"
-              onClick={() => { }}
             >
               Forgot your password?
             </motion.button>
@@ -70,7 +106,6 @@ export default function AuthForm() {
               whileTap={{ scale: 0.925, filter: "brightness(0.5)" }}
               transition={{ duration: 0.2, ease: "easeInOut", type: "spring" }}
               className="px-[clamp(0.5rem,1vw,1.5rem)] py-[clamp(0.1rem,0.75vh,2rem)] text-[clamp(1rem,1.2vw,3rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-linear-to-r from-[#eb4b3f] to-[#f0945b] text-white font-bold"
-              onClick={() => { }}
             >
               LOG IN
             </motion.button>
