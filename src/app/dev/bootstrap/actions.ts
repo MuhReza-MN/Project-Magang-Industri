@@ -9,9 +9,11 @@ const prisma = new PrismaClient();
 
 export async function bootstrapEvents() {
   // ⚠️ SAFETY: prevent double run
-  const existing = await prisma.event.count();
-  if (existing > 0) {
-    return { ok: false, message: "Events already exist" };
+  const existing = await prisma.event.findFirst({
+    where: { eventCode: { startsWith: "HOME-" } },
+  });
+  if (existing) {
+    return { ok: false, message: "Bootstrap already run" };
   }
 
   const superadmin = await prisma.user.findUniqueOrThrow({

@@ -30,7 +30,6 @@ model User {
   accounts      Account[]
 
   image  String?
-  events Event[]
 
   @@map("User")
 }
@@ -63,8 +62,7 @@ model Event {
 
   participants Participant[]
   presentLogs  PresentLog[]
-  user         User?         @relation(fields: [userId], references: [id])
-  userId       String?
+  
 }
 
 model Participant {
@@ -74,6 +72,7 @@ model Participant {
   contact String?
 
   status String @default("REGISTERED")
+  qrCode String @unique
 
   createdAt DateTime @default(now())
 
