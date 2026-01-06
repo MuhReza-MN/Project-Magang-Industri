@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useMemo, useState } from "react";
 import { logoFont } from "@/lib/fonts";
 import ActionButtons from "@/components/navbar/dashboard/DBActionBtn";
 
@@ -21,100 +21,195 @@ export default function DashboardView({
   events: DashboardEvent[];
 }) {
   const tableScrollRef = useRef<HTMLDivElement | null>(null);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [eoFilter, setEoFilter] = useState<string>("ALL");
+  const [participantRange, setParticipantRange] = useState("ALL"); // placeholder
+
+  const statusOptions = useMemo(() => {
+    const set = new Set(events.map(e => e.status));
+    return ["ALL", ...Array.from(set)];
+  }, [events]);
+
+  const eoOptions = useMemo(() => {
+    const set = new Set(
+      events.map(e => e.eo?.name).filter(Boolean) as string[]
+    );
+    return ["ALL", ...Array.from(set)];
+  }, [events]);
+
+  const filteredEvents = useMemo(() => {
+    return events.filter(event => {
+      const matchesSearch =
+        event.title.toLowerCase().includes(search.toLowerCase());
+
+      const matchesStatus =
+        statusFilter === "ALL" || event.status === statusFilter;
+
+      const matchesEO =
+        eoFilter === "ALL" || event.eo?.name === eoFilter;
+
+      // placeholder – always true for now
+      const matchesParticipants = true;
+
+      return (
+        matchesSearch &&
+        matchesStatus &&
+        matchesEO &&
+        matchesParticipants
+      );
+    });
+  }, [events, search, statusFilter, eoFilter]);
 
   return (
-    <div className="h-full flex flex-col contain-inline-size">
+    <div className="h-full flex flex-col contain-content">
       <div className="absolute h-full inset-0 bg-linear-to-tr from-violet-200 via-violet-300 to-blue-200 -z-10" />
 
       <div className="sticky top-[clamp(3.5rem,6vh,6rem)] z-30 bg-violet-200/95 backdrop-blur-3xl border-b border-neutral-200">
-        <div className="flex items-center gap-3 p-4 border-b-3 border-neutral-300/70 mt-2">
-          <input
-            className="px-3 py-2 rounded-md bg-white text-neutral-600 border border-neutral-200 w-96"
-            placeholder="Search events..."
-          />
-          <button type="button" className="px-3 py-2 rounded-md text-neutral-600 bg-white border border-neutral-200">Filters</button>
+        <div className="flex items-center gap-3 p-4 border-b-3 border-neutral-300/70">
+          <label className="flex flex-col text-neutral-700 font-bold">
+            Cari Events
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="px-3 py-2 rounded-md bg-white text-neutral-600 border border-neutral-200 w-96"
+              placeholder="Search events..."
+            />
+          </label>
+          <label className="flex flex-col text-neutral-700 font-bold">
+            Filter Status
+            <select
+              value={statusFilter}
+              onChange={e => setStatusFilter(e.target.value)}
+              className="px-3 py-2 rounded-md bg-white border border-neutral-200 text-neutral-600"
+            >
+              {statusOptions.map(status => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex flex-col text-neutral-700 font-bold">
+            Filter Handler
+            <select
+              value={eoFilter}
+              onChange={e => setEoFilter(e.target.value)}
+              className="px-3 py-2 rounded-md bg-white border border-neutral-200 text-neutral-600"
+            >
+              {eoOptions.map(eo => (
+                <option key={eo} value={eo}>
+                  {eo}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button
+            type="button"
+            className="px-3 py-2 mt-6 rounded-md text-neutral-200 font-bold bg-green-500 border border-neutral-200"
+          >
+            Buat Event Baru
+          </button>
         </div>
 
         <h3 className={`${logoFont.className} tracking-widest px-4 py-3 text-xl font-bold text-neutral-700`}>EVENT LIST</h3>
       </div>
       <div className="flex-1 bg-white overflow-hidden">
-        <div className=" overflow-x-auto">
-          <div ref={tableScrollRef} className="max-h-full overflow-y-auto">
-            <div className="w-full">
-              <table className="w-full table-fixed border-collapse text-sm text-black">
-                <colgroup>
-                  <col className="w-30" /> {/* status */}
-                  <col className="w-60" /> {/* event name */}
-                  <col className="w-35" /> {/* eo */}
-                  <col className="w-30" /> {/* participants */}
-                  <col className="w-35" /> {/* start */}
-                  <col className="w-35" /> {/* end */}
-                  <col className="min-w-35 w-35 max-w-35" /> {/* actions */}
-                </colgroup>
+        <div className="sticky top-0 z-30 bg-white">
+          <table className="w-full table-fixed border-collapse text-sm text-black">
+            <colgroup>
+              <col className="w-30" /> {/* status */}
+              <col className="w-60" /> {/* event name */}
+              <col className="w-35" /> {/* eo */}
+              <col className="w-30" /> {/* participants */}
+              <col className="w-35" /> {/* start */}
+              <col className="w-35" /> {/* end */}
+              <col className="min-w-35 w-35 max-w-35" /> {/* actions */}
+            </colgroup>
 
-                <thead className="sticky top-0 z-20 bg-white text-neutral-500">
-                  <tr className="border-b border-neutral-200 text-[14px]">
-                    <th className="px-4 py-4 text-center">STATUS</th>
-                    <th className="px-4 py-4 text-left">EVENT NAME</th>
-                    <th className="px-4 py-4 text-left">EO NAME</th>
-                    <th className="px-4 py-4 text-left">PARTICIPANTS</th>
-                    <th className="px-4 py-4 text-center">START DATE</th>
-                    <th className="px-4 py-4 text-center">END DATE</th>
-                    <th className="px-4 py-4 text-center sticky right-0 bg-neutral-100 border-l">
-                      ACTIONS
-                    </th>
+            <thead className="sticky top-0 z-20 bg-white text-neutral-500">
+              <tr className="border-b border-neutral-200 text-[14px]">
+                <th className="px-4 py-4 text-center">STATUS</th>
+                <th className="px-4 py-4 text-left">EVENT NAME</th>
+                <th className="px-4 py-4 text-left">EO NAME</th>
+                <th className="px-4 py-4 text-left">PARTICIPANTS</th>
+                <th className="px-4 py-4 text-center">START DATE</th>
+                <th className="px-4 py-4 text-center">END DATE</th>
+                <th className="px-4 py-4 text-center sticky right-0 bg-neutral-100 border-l">
+                  ACTIONS
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div ref={tableScrollRef} className="h-full overflow-auto">
+          <div className="flex-1 overflow-auto">
+            <table className="w-full table-fixed border-collapse text-sm text-black">
+              <colgroup>
+                <col className="w-30" /> {/* status */}
+                <col className="w-60" /> {/* event name */}
+                <col className="w-35" /> {/* eo */}
+                <col className="w-30" /> {/* participants */}
+                <col className="w-35" /> {/* start */}
+                <col className="w-35" /> {/* end */}
+                <col className="min-w-35 w-35 max-w-35" /> {/* actions */}
+              </colgroup>
+
+              <tbody>
+                {filteredEvents.map((event, i) => (
+                  <tr
+                    key={event.id}
+                    className={`border-b border-neutral-200 text-[12px] ${i % 2 === 0 ? "bg-white" : "bg-neutral-50"}`}>
+                    <td className="px-4 py-3 text-center whitespace-nowrap font-semibold">
+                      {event.status}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div
+                        className="max-w-full truncate"
+                        title={event.title}
+                      >
+                        {event.title}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div
+                        className="max-w-full truncate"
+                        title={event.eo?.name ?? "-"}
+                      >
+                        {event.eo?.name ?? "-"}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-[15px]">
+                      <div
+                        className="max-w-full truncate"
+                      >
+                        ± {event._count.participants}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-center whitespace-nowrap">
+                      {event.startAt.toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3 text-center whitespace-nowrap">
+                      {event.endAt ? event.endAt.toLocaleDateString() : "-"}
+                    </td>
+                    <td className="px-4 py-3 sticky right-0 bg-neutral-100 border-l">
+                      <ActionButtons
+                        onView={() => console.log("view", event.id)}
+                        onEdit={() => console.log("edit", event.id)}
+                        onDelete={() => console.log("delete", event.id)}
+                      />
+                    </td>
                   </tr>
-                </thead>
-
-                <tbody>
-                  {events.map((event, i) => (
-                    <tr
-                      key={event.id}
-                      className={`border-b border-neutral-200 text-[12px] ${i % 2 === 0 ? "bg-white" : "bg-neutral-50"}`}>
-                      <td className="px-4 py-3 text-center whitespace-nowrap font-semibold">
-                        {event.status}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div
-                          className="max-w-full truncate"
-                          title={event.title}
-                        >
-                          {event.title}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div
-                          className="max-w-full truncate"
-                          title={event.eo?.name ?? "-"}
-                        >
-                          {event.eo?.name ?? "-"}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-[15px]">
-                        <div
-                          className="max-w-full truncate"
-                        >
-                          ± {event._count.participants}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-center whitespace-nowrap">
-                        {event.startAt.toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-3 text-center whitespace-nowrap">
-                        {event.endAt ? event.endAt.toLocaleDateString() : "-"}
-                      </td>
-                      <td className="px-4 py-3 sticky right-0 bg-neutral-100 border-l">
-                        <ActionButtons
-                          onView={() => console.log("view", event.id)}
-                          onEdit={() => console.log("edit", event.id)}
-                          onDelete={() => console.log("delete", event.id)}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+                {filteredEvents.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="text-center py-10 text-neutral-400">
+                      No events match the current filters
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
