@@ -3,6 +3,8 @@
 import React, { useRef, useMemo, useState } from "react";
 import { logoFont } from "@/lib/fonts";
 import ActionButtons from "@/components/navbar/dashboard/DBActionBtn";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 type DashboardEvent = {
   id: string;
@@ -20,6 +22,7 @@ export default function DashboardView({
 }: {
   events: DashboardEvent[];
 }) {
+  const router = useRouter();
   const tableScrollRef = useRef<HTMLDivElement | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
@@ -49,7 +52,7 @@ export default function DashboardView({
       const matchesEO =
         eoFilter === "ALL" || event.eo?.name === eoFilter;
 
-      // placeholder – always true for now
+      // placeholder
       const matchesParticipants = true;
 
       return (
@@ -62,7 +65,7 @@ export default function DashboardView({
   }, [events, search, statusFilter, eoFilter]);
 
   return (
-    <div className="h-full flex flex-col contain-content">
+    <div className="h-full flex flex-col contain-inline-size">
       <div className="absolute h-full inset-0 bg-linear-to-tr from-violet-200 via-violet-300 to-blue-200 -z-10" />
 
       <div className="sticky top-[clamp(3.5rem,6vh,6rem)] z-30 bg-violet-200/95 backdrop-blur-3xl border-b border-neutral-200">
@@ -104,18 +107,21 @@ export default function DashboardView({
               ))}
             </select>
           </label>
-          <button
+          <motion.button
             type="button"
-            className="px-3 py-2 mt-6 rounded-md text-neutral-200 font-bold bg-green-500 border border-neutral-200"
+            className="px-3 py-2 mt-6 rounded-md text-white font-bold bg-green-500 border border-neutral-200"
+            whileTap={{ scale: 0.95, filter: "brightness(0.75)" }}
+            whileHover={{ scale: 1.05, filter: "brightness(0.85)" }}
+            transition={{ duration: 0.1, type: "spring", stiffness: 500, damping: 25 }}
           >
             Buat Event Baru
-          </button>
+          </motion.button>
         </div>
 
         <h3 className={`${logoFont.className} tracking-widest px-4 py-3 text-xl font-bold text-neutral-700`}>EVENT LIST</h3>
       </div>
       <div className="flex-1 bg-white overflow-hidden">
-        <div className="sticky top-0 z-30 bg-white">
+        <div ref={tableScrollRef} className="h-full overflow-y-auto">
           <table className="w-full table-fixed border-collapse text-sm text-black">
             <colgroup>
               <col className="w-30" /> {/* status */}
@@ -140,80 +146,69 @@ export default function DashboardView({
                 </th>
               </tr>
             </thead>
+            <tbody>
+              {filteredEvents.map((event, i) => (
+                <tr
+                  key={event.id}
+                  className={`border-b border-neutral-200 text-[12px] ${i % 2 === 0 ? "bg-white" : "bg-neutral-50"}`}>
+                  <td className="px-4 py-3 text-center whitespace-nowrap font-semibold">
+                    {event.status}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div
+                      className="max-w-full truncate"
+                      title={event.title}
+                    >
+                      {event.title}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div
+                      className="max-w-full truncate"
+                      title={event.eo?.name ?? "-"}
+                    >
+                      {event.eo?.name ?? "-"}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-[15px]">
+                    <div
+                      className="max-w-full truncate"
+                    >
+                      ± {event._count.participants}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-center whitespace-nowrap">
+                    {event.startAt.toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-3 text-center whitespace-nowrap">
+                    {event.endAt ? event.endAt.toLocaleDateString() : "-"}
+                  </td>
+                  <td className="px-4 py-3 sticky right-0 bg-neutral-100 border-l">
+                    <ActionButtons
+                      onView={() => {
+                        router.push(`/dashboard/event-list/${event.id}`);
+                      }}
+                      onEdit={() => {
+                        router.push(`/dashboard/event-list/${event.id}/edit`);
+                      }}
+                      onDelete={() => {
+                        console.log("delete", event.id);
+                      }}
+                    />
+                  </td>
+                </tr>
+              ))}
+              {filteredEvents.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="text-center py-10 text-neutral-400">
+                    No events match the current filters
+                  </td>
+                </tr>
+              )}
+            </tbody>
           </table>
         </div>
-        <div ref={tableScrollRef} className="h-full overflow-auto">
-          <div className="flex-1 overflow-auto">
-            <table className="w-full table-fixed border-collapse text-sm text-black">
-              <colgroup>
-                <col className="w-30" /> {/* status */}
-                <col className="w-60" /> {/* event name */}
-                <col className="w-35" /> {/* eo */}
-                <col className="w-30" /> {/* participants */}
-                <col className="w-35" /> {/* start */}
-                <col className="w-35" /> {/* end */}
-                <col className="min-w-35 w-35 max-w-35" /> {/* actions */}
-              </colgroup>
-
-              <tbody>
-                {filteredEvents.map((event, i) => (
-                  <tr
-                    key={event.id}
-                    className={`border-b border-neutral-200 text-[12px] ${i % 2 === 0 ? "bg-white" : "bg-neutral-50"}`}>
-                    <td className="px-4 py-3 text-center whitespace-nowrap font-semibold">
-                      {event.status}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div
-                        className="max-w-full truncate"
-                        title={event.title}
-                      >
-                        {event.title}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div
-                        className="max-w-full truncate"
-                        title={event.eo?.name ?? "-"}
-                      >
-                        {event.eo?.name ?? "-"}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-[15px]">
-                      <div
-                        className="max-w-full truncate"
-                      >
-                        ± {event._count.participants}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-center whitespace-nowrap">
-                      {event.startAt.toLocaleDateString()}
-                    </td>
-                    <td className="px-4 py-3 text-center whitespace-nowrap">
-                      {event.endAt ? event.endAt.toLocaleDateString() : "-"}
-                    </td>
-                    <td className="px-4 py-3 sticky right-0 bg-neutral-100 border-l">
-                      <ActionButtons
-                        onView={() => console.log("view", event.id)}
-                        onEdit={() => console.log("edit", event.id)}
-                        onDelete={() => console.log("delete", event.id)}
-                      />
-                    </td>
-                  </tr>
-                ))}
-                {filteredEvents.length === 0 && (
-                  <tr>
-                    <td colSpan={7} className="text-center py-10 text-neutral-400">
-                      No events match the current filters
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
-
     </div>
   )
 }

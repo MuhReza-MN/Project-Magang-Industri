@@ -106,7 +106,7 @@ export default function ExpandImage({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.99 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 top-0 min-h-screen"
+                className="fixed inset-0 z-80 flex items-center justify-center bg-slate-900/40 top-0 min-h-screen"
               >
                 <motion.div
                   initial={{ opacity: 0, y: 50 }}
@@ -178,16 +178,16 @@ export default function ExpandImage({
                         style={{ scale: scaleMv, x, y }}
                         drag
                         dragConstraints={{
-                          left: -200 * (scale - 1),
-                          right: 200 * (scale - 1),
-                          top: -200 * (scale - 1),
-                          bottom: 200 * (scale - 1),
+                          left: -150 * scale,
+                          right: 150 * scale,
+                          top: -150 * scale,
+                          bottom: 150 * scale,
                         }}
                         dragElastic={0.2}
                         dragMomentum={false}
                       >
                         <Image
-                          src={image ? `/poster/${image}` : "/placeholder.webp"}
+                          src={image ? `${image}` : "/placeholder.webp"}
                           layout="fill"
                           objectFit="contain"
                           alt={imageName}
