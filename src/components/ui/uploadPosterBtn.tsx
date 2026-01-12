@@ -10,7 +10,7 @@ import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 
 
-export default function PosterUploadModal() {
+export default function PosterUploadModal({ onUploaded }: { onUploaded: (url: string) => void }) {
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -42,6 +42,28 @@ export default function PosterUploadModal() {
     animate(x, 0, { duration: 0.2, ease: "easeInOut" });
     animate(y, 0, { duration: 0.2, ease: "easeInOut" });
   };
+
+  const handleConfirm = async () => {
+    if (!file) return;
+
+    const fd = new FormData();
+    fd.append("file", file);
+
+    const res = await fetch("/api/upload-poster", {
+      method: "POST",
+      body: fd,
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      alert(data.error || "Upload gagal");
+      return;
+    }
+
+    onUploaded(data.url);
+    handleClose();
+  };
+
 
   const onDrop = (acceptedFiles: File[]) => {
     const f = acceptedFiles[0];
@@ -206,11 +228,7 @@ export default function PosterUploadModal() {
                         <>
                           <button
                             type="button"
-                            onClick={() => {
-                              if (!file) return;
-                              console.log("Ready to upload:", file);
-                              handleClose();
-                            }}
+                            onClick={handleConfirm}
                             className="p-2 rounded-full bg-green-600 text-white hover:bg-green-700"
                           >
                             <FiCheck />

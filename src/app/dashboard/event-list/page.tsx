@@ -19,16 +19,22 @@ export default async function DashboardEventListPage() {
 
   if (!session) redirect("/login");
 
+  const currentUser = await prisma.user.findUniqueOrThrow({
+    where: { id: session.user.id },
+    select: { id: true, role: true },
+  });
+
   const events = await prisma.event.findMany({
+    where:
+      currentUser.role === "EO"
+        ? { eoId: currentUser.id }
+        : {},
     orderBy: { createdAt: "desc" },
     include: {
-      eo: {
-        select: { name: true },
-      },
-      _count: {
-        select: { participants: true },
-      },
+      eo: { select: { name: true } },
+      _count: { select: { participants: true } },
     },
   });
+
   return <DashboardView events={events} />
 }

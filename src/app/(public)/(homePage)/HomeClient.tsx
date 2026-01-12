@@ -61,7 +61,18 @@ function useThrottledResizeObserver(
   };
 }
 
-export default function HomeClient() {
+type HomeClientProps = {
+  events: {
+    id: string;
+    title: string;
+    posterImage: string | null;
+    eventCode: string;
+    startAt: Date;
+    endAt: Date | null;
+  }[];
+};
+
+export default function HomeClient({ events }: HomeClientProps) {
   const [currSlide, setCurrSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [subject, setSubject] = useState("Hal Umum");
@@ -531,30 +542,16 @@ export default function HomeClient() {
             ref={sliderRef}
             className="keen-slider"
           >
-            <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event1" image="temp1.webp" />
-            </div>
-            <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event2" image="temp2.webp" />
-            </div>
-            <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event3" image="temp3.webp" />
-            </div>
-            <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event4" image="temp4.webp" />
-            </div>
-            <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event5" image="temp5.webp" />
-            </div>
-            <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event6" image="temp6.webp" />
-            </div>
-            <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event7" image="temp7.webp" />
-            </div>
-            <div className="keen-slider__slide flex justify-center relative">
-              <EventCard title="Event8" image="temp8.webp" />
-            </div>
+            {events.map((event) => (
+              <div key={event.id} className="keen-slider__slide flex justify-center relative">
+                <EventCard
+                  eventId={event.id}
+                  eventCode={event.eventCode}
+                  title={event.title}
+                  image={event.posterImage || "/placeholder.webp"}
+                />
+              </div>
+            ))}
           </motion.div>
           {loaded && instanceRef.current && (
             <>

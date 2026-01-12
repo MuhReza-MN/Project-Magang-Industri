@@ -14,19 +14,25 @@ import Image from "next/image";
 import ExpandImage from "@/components/ui/expandImgBtn";
 import "react-phone-input-2/lib/style.css";
 import { RiCloseLargeFill } from "react-icons/ri";
+import { registerParticipant } from "@/app/(public)/(homePage)/registerParticipant";
 
 type ERegisProps = {
+  eventId?: string;
+  eventCode?: string;
   eventName: string;
   image?: string;
 };
 
-export default function EventRegisForm({ eventName, image }: ERegisProps) {
+export default function EventRegisForm({ eventName, image, eventId, eventCode }: ERegisProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [ruleAgreed, setRuleAgree] = useState(false);
   //const [notifAgreed, setNotifAgree] = useState(false);
   const [showRules, setShowRules] = useState(false);
   const [phone, setPhone] = useState("");
   const [scale, setScale] = useState(1);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -176,7 +182,7 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                         >
                           <Image
                             src={
-                              image ? `/poster/${image}` : "/placeholder.webp"
+                              image ? `${image}` : "/placeholder.webp"
                             }
                             layout="fill"
                             objectFit="contain"
@@ -200,13 +206,41 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                           />
                         </div>
                       </div>
-                      <form className="flex flex-col space-y-[clamp(0.1rem,1vh,8rem)] h-full justify-center xl:mr-[2%]">
+                      <form
+                        onSubmit={async (e) => {
+                          e.preventDefault();
+                          if (!ruleAgreed) {
+                            alert("Anda harus menyetujui Aturan & Ketentuan sebelum mendaftar.");
+                            return;
+                          }
+                          try {
+                            await registerParticipant({
+                              eventId,
+                              eventCode,
+                              name,
+                              email,
+                              contact: phone,
+                            });
+                            alert("Pendaftaran berhasil! QR Code akan dikirim melalui email.");
+                            handleClose();
+                            setName("");
+                            setEmail("");
+                            setPhone("");
+                          } catch (err) {
+                            console.error(err);
+                            alert("Terjadi kesalahan saat mendaftar. Silakan coba lagi.");
+                          }
+                        }}
+                        className="flex flex-col space-y-[clamp(0.1rem,1vh,8rem)] h-full justify-center xl:mr-[2%]"
+                      >
                         <label className="flex flex-col font-bold text-black text-[clamp(0.9rem,0.8vw,2.5rem)] gap-[clamp(0rem,0.5vw,0.25rem)]">
                           Nama Lengkap
                           <input
                             type="text"
                             required
                             placeholder="Masukan Nama Lengkap Anda"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             className="md:w-full border rounded mt-1 p-[clamp(0.5rem,0.5vw,0.75rem)] text-black"
                           />
                         </label>
@@ -216,6 +250,8 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                             type="email"
                             required
                             placeholder="Masukan Alamat Email Anda"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="md:w-full border rounded mt-1 p-[clamp(0.5rem,0.5vw,0.75rem)] text-black"
                           />
                         </label>
@@ -312,9 +348,6 @@ export default function EventRegisForm({ eventName, image }: ERegisProps) {
                             whileTap={{ scale: 0.95, filter: "brightness(0.8)" }}
                             transition={{ duration: 0.2, ease: "easeInOut", type: "spring" }}
                             className="px-[clamp(1rem,1.2vw,1.5rem)] py-[clamp(0.5rem,1vh,1rem)] text-[clamp(1rem,1.2vw,3rem)] rounded-[clamp(0.25rem,0.5vw,1rem)] bg-linear-to-r from-[#eb4b3f] to-[#f0945b] text-white font-bold"
-                            onClick={() => {
-                              setPhone("");
-                            }}
                           >
                             Submit
                           </motion.button>

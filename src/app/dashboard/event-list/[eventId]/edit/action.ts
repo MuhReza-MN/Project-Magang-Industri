@@ -12,6 +12,7 @@ export async function updateEvent(data: {
   eoId: string;
   startAt: string;
   endAt: string | null;
+  posterImage: string;
   details: string;
 }) {
   const {
@@ -22,6 +23,7 @@ export async function updateEvent(data: {
     eoId,
     startAt,
     endAt,
+    posterImage,
     details,
   } = data;
 
@@ -34,6 +36,7 @@ export async function updateEvent(data: {
       eoId,
       startAt: new Date(startAt),
       endAt: endAt ? new Date(endAt) : null,
+      posterImage,
       details,
     },
   });

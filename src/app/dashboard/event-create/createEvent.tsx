@@ -5,12 +5,11 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ExpandImage from "@/components/ui/expandImgBtn";
 import { motion } from "framer-motion";
-import { updateEvent } from "./action";
+import { createEvent } from "./action";
 import { FaBars } from "react-icons/fa6";
-import { useDropzone } from 'react-dropzone'
 import PosterUploadModal from "@/components/ui/uploadPosterBtn";
 
-type EditEventProps = {
+type CreateEventProps = {
   event: {
     id: string;
     title: string;
@@ -23,13 +22,6 @@ type EditEventProps = {
     eo: { id: string; name: string | null };
     _count: { participants: number };
   };
-  participants: {
-    id: string;
-    name: string | null;
-    email: string;
-    contact: string | null;
-    status: string;
-  }[];
   eoUsers: {
     id: string;
     name: string | null;
@@ -49,12 +41,11 @@ type EventDetails = {
   }[];
 };
 
-export default function EditEvent({
+export default function CreateEvent({
   event,
-  participants,
   eoUsers,
   currentUserRole
-}: EditEventProps) {
+}: CreateEventProps) {
   const router = useRouter();
   const lastWarn = useRef(0);
   const [isTouch, setIsTouch] = useState(false);
@@ -66,6 +57,7 @@ export default function EditEvent({
     itemIndex: number;
   } | null>(null);
 
+
   const [form, setForm] = useState({
     title: event.title,
     description: event.description,
@@ -73,12 +65,10 @@ export default function EditEvent({
     eoId: event.eo.id,
     startAt: event.startAt.toISOString().slice(0, 10),
     endAt: event.endAt?.toISOString().slice(0, 10) ?? "",
-    posterImage: event.posterImage,
+    posterImage: event.posterImage ?? "/placeholder.webp",
   });
 
-  const statusLockedForEO =
-    currentUserRole === "EO" && event.status === "UNAPPROVED";
-
+  const statusLockedForEO = currentUserRole === "EO";
 
   useEffect(() => {
     if (!event) return;
@@ -154,6 +144,7 @@ export default function EditEvent({
     });
   };
 
+
   const validateDetails = () => {
     if (!details.intro.trim()) {
       alert("Intro ketentuan tidak boleh kosong");
@@ -187,17 +178,6 @@ export default function EditEvent({
 
     return true;
   };
-
-  const isDirty =
-    JSON.stringify(form) !== JSON.stringify({
-      title: event.title,
-      description: event.description,
-      status: event.status,
-      eoId: event.eo.id,
-      startAt: event.startAt.toISOString().slice(0, 10),
-      endAt: event.endAt?.toISOString().slice(0, 10) ?? "",
-    }) ||
-    JSON.stringify(details) !== JSON.stringify(parsedDetails);
 
   return (
     <div className="h-full flex flex-col contain-inline-size">
@@ -268,28 +248,25 @@ export default function EditEvent({
               }}
             />
 
+
           </div>
           <div className="flex-1 grid grid-cols-2 gap-x-5 gap-y-1 text-sm h-full">
             <div className=" flex flex-row items-center gap-2 w-full h-full col-span-2">
               <h2 className=" text-2xl font-bold p-1 rounded-md">
-                Edit Event
+                Buat Event Baru
               </h2>
               <div className="flex gap-5 ml-5 w-[50%]">
                 <motion.button
                   type="button"
-                  disabled={!isDirty}
-                  whileTap={!isDirty ? {} : { scale: 0.95, filter: "brightness(0.75)" }}
-                  whileHover={!isDirty ? {} : { scale: 1.05, filter: "brightness(0.85)" }}
+                  whileTap={{ scale: 0.95, filter: "brightness(0.75)" }}
+                  whileHover={{ scale: 1.05, filter: "brightness(0.85)" }}
                   transition={{ duration: 0.1, type: "spring", stiffness: 500, damping: 25 }}
-                  className={`px-4 py-2 rounded font-bold w-full ${isDirty
-                    ? "bg-green-600 text-white"
-                    : "bg-green-300 text-white cursor-not-allowed"}
-                  `}
+                  className={`px-4 py-2 rounded font-bold w-full bg-green-600 text-white`}
                   onClick={async () => {
                     if (!validateDetails()) return;
 
                     if (
-                      confirm("Simpan perubahan pada event ini?")
+                      confirm("Simpan event baru ini?")
                     ) {
                       const normalizedDetails = {
                         ...details,
@@ -303,9 +280,9 @@ export default function EditEvent({
                         })),
                       };
 
-                      await updateEvent({
-                        eventId: event.id,
+                      await createEvent({
                         ...form,
+                        posterImage: form.posterImage || "/placeholder.webp",
                         description: form.description?.trim(),
                         details: JSON.stringify(normalizedDetails),
                       });
@@ -313,7 +290,7 @@ export default function EditEvent({
                     }
                   }}
                 >
-                  Simpan Edit
+                  Simpan Event
                 </motion.button>
 
                 <motion.button
@@ -324,14 +301,14 @@ export default function EditEvent({
                   className="px-4 py-2 rounded bg-red-700 text-white font-bold w-full"
                   onClick={() => {
                     if (
-                      confirm("Batalkan perubahan dan kembali ke daftar event?")
+                      confirm("Batalkan aksi dan kembali ke daftar event?")
                     ) {
                       router.push("/dashboard/event-list");
                     }
                   }}
 
                 >
-                  Batalkan Edit
+                  Kembali
                 </motion.button>
               </div>
 
@@ -356,13 +333,18 @@ export default function EditEvent({
                   : "bg-neutral-50"
                   }`}
               >
-                {event.status === "UNAPPROVED" && <option>UNAPPROVED</option>}
-                <option>UPCOMING</option>
-                <option>JOINABLE</option>
-                <option>ONGOING</option>
-                <option>CLOSED</option>
-                <option>FINISHED</option>
-                <option>CANCELLED</option>
+                {statusLockedForEO ? (
+                  <option value="UNAPPROVED">UNAPPROVED</option>
+                ) : (
+                  <>
+                    <option>UPCOMING</option>
+                    <option>JOINABLE</option>
+                    <option>ONGOING</option>
+                    <option>CLOSED</option>
+                    <option>FINISHED</option>
+                    <option>CANCELLED</option>
+                  </>
+                )}
               </select>
             </label>
 
@@ -390,7 +372,6 @@ export default function EditEvent({
               <input
                 type="date"
                 value={form.startAt}
-                required
                 onChange={(e) => setForm({ ...form, startAt: e.target.value })}
                 className="block w-full border rounded p-2 bg-neutral-50"
               />
@@ -401,7 +382,6 @@ export default function EditEvent({
                 type="date"
                 value={form.endAt}
                 min={form.startAt}
-                required
                 onChange={(e) => setForm({ ...form, endAt: e.target.value })}
                 className="block w-full border rounded p-2 bg-neutral-50"
               />

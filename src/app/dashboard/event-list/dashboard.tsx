@@ -5,6 +5,7 @@ import { logoFont } from "@/lib/fonts";
 import ActionButtons from "@/components/navbar/dashboard/DBActionBtn";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { deleteEvent } from "./action";
 
 type DashboardEvent = {
   id: string;
@@ -15,7 +16,6 @@ type DashboardEvent = {
   eo: { name: string | null };
   _count: { participants: number };
 };
-
 
 export default function DashboardView({
   events,
@@ -113,6 +113,9 @@ export default function DashboardView({
             whileTap={{ scale: 0.95, filter: "brightness(0.75)" }}
             whileHover={{ scale: 1.05, filter: "brightness(0.85)" }}
             transition={{ duration: 0.1, type: "spring", stiffness: 500, damping: 25 }}
+            onClick={() => {
+              router.push("/dashboard/event-create");
+            }}
           >
             Buat Event Baru
           </motion.button>
@@ -191,8 +194,11 @@ export default function DashboardView({
                       onEdit={() => {
                         router.push(`/dashboard/event-list/${event.id}/edit`);
                       }}
-                      onDelete={() => {
-                        console.log("delete", event.id);
+                      onDelete={async () => {
+                        if (confirm(`Hapus event "${event.title}" beserta seluruh partisipannya?`)) {
+                          await deleteEvent(event.id);
+                          router.refresh();
+                        }
                       }}
                     />
                   </td>

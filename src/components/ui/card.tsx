@@ -9,9 +9,11 @@ import { motion } from "framer-motion";
 type ECardProps = {
   title: string;
   image?: string;
+  eventId: string;
+  eventCode: string;
 };
 
-export default function EventCard({ title, image }: ECardProps) {
+export default function EventCard({ title, image, eventId, eventCode }: ECardProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isTouch, setIsTouch] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -88,7 +90,7 @@ export default function EventCard({ title, image }: ECardProps) {
             >
               <Image
                 className=" bg-gray-100/70 p-[clamp(0.25rem,0.5vw,1rem)]"
-                src={image ? `/poster/${image}` : "/placeholder.webp"}
+                src={image ? `${image}` : "/placeholder.webp"}
                 layout="fill"
                 objectFit="contain"
                 alt={`${title} Poster Image`}
@@ -98,11 +100,18 @@ export default function EventCard({ title, image }: ECardProps) {
           </motion.div>
         )}
       </div>
-      <div className="text-center">
+      <div className="text-center w-full align-middle items-center justify-center">
         <h3 className="my-[clamp(0.5rem,1vw,0.75rem)] font-bold text-[clamp(2rem,1.75vw,3.75rem)] text-black">
           {title}
         </h3>
-        <EventRegisForm eventName={title} image={image} />
+        <div className="flex w-full justify-center">
+          <EventRegisForm
+            eventName={title}
+            image={image}
+            eventId={eventId}
+            eventCode={eventCode}
+          />
+        </div>
       </div>
     </div>
   );

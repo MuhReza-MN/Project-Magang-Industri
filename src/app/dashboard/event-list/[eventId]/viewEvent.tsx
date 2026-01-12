@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { logoFont } from "@/lib/fonts";
 import { FaEdit } from "react-icons/fa";
 import ActionButtons from "@/components/navbar/dashboard/DBActionBtn";
+import { useRouter } from "next/navigation";
 
 type EditEventProps = {
   event: {
@@ -32,12 +33,27 @@ export default function ViewEvent({
   event,
   participants,
 }: EditEventProps) {
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [isTouch, setIsTouch] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const tableScrollRef = useRef<HTMLDivElement | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const total = participants.length;
+  const verified = participants.filter(p => p.status === "VERIFIED").length;
+  const attended = participants.filter(p => p.status === "ATTENDED").length;
+
+  const formatDate = (d?: Date | null) =>
+    d
+      ? d.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+      : "-";
+
 
   useEffect(() => {
     if (!event) return;
@@ -66,6 +82,9 @@ export default function ViewEvent({
       return matchSearch && matchStatus;
     });
   }, [participants, search, statusFilter]);
+
+  const canAddParticipant =
+    event.status === "JOINABLE" || event.status === "ONGOING";
 
   return (
     <div className="h-full flex flex-col contain-inline-size">
@@ -146,27 +165,27 @@ export default function ViewEvent({
                 {event.eo.name ?? "-"}
               </div>
             </div>
-            <label>
+            <div>
               Start Date
-              <input
-                type="date"
-                defaultValue={event.startAt.toISOString().slice(0, 10)}
+              <div
                 className="block w-full border rounded py-1 px-3 bg-neutral-50"
-              />
-            </label>
+              >
+                {formatDate(event.startAt)}
+              </div>
+            </div>
 
-            <label>
+            <div>
               End Date
-              <input
-                type="date"
-                defaultValue={event.endAt?.toISOString().slice(0, 10)}
+              <div
                 className="block w-full border rounded py-1 px-3 bg-neutral-50"
-              />
-            </label>
+              >
+                {formatDate(event.endAt)}
+              </div>
+            </div>
 
             <div className="col-span-2 grid grid-cols-2 gap-4 mt-2 font-semibold">
               <div>Pending Verification : -</div>
-              <div>Verified Participants : {event._count.participants}</div>
+              <div>Verified Participants : -</div>
               <div>Attended the Event : -</div>
               <div>Participant Rate : -</div>
             </div>
@@ -192,17 +211,27 @@ export default function ViewEvent({
               className="px-3 py-2 rounded-md bg-white border border-neutral-200 text-neutral-600"
             >
               <option value="ALL">All</option>
+              <option value="REGISTERED">Registered</option>
               <option value="VERIFIED">Verified</option>
-              <option value="PENDING">Pending</option>
-              <option value="DENIED">Denied</option>
+              <option value="ATTENDED">Attended</option>
+              <option value="REJECTED">Rejected</option>
             </select>
           </label>
           <motion.button
             type="button"
-            whileTap={{ scale: 0.95, filter: "brightness(0.75)" }}
-            whileHover={{ scale: 1.05, filter: "brightness(0.85)" }}
+            onClick={() => {
+              if (!canAddParticipant) return;
+              router.push(`/dashboard/event-list/${event.id}/add-participant`);
+            }}
+            disabled={!canAddParticipant}
+            whileTap={canAddParticipant && { scale: 0.95, filter: "brightness(0.75)" }}
+            whileHover={canAddParticipant && { scale: 1.05, filter: "brightness(0.85)" }}
             transition={{ duration: 0.1, type: "spring", stiffness: 500, damping: 25 }}
-            className="px-3 py-2 mt-6 rounded-md text-white font-bold bg-green-500 border border-neutral-200"
+            className={`px-3 py-2 mt-6 rounded-md font-bold border border-neutral-200
+              ${canAddParticipant
+                ? "bg-green-500 text-white cursor-pointer"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
           >
             Tambah Peserta Baru
           </motion.button>
@@ -229,7 +258,12 @@ export default function ViewEvent({
                   <td className="px-4 py-3 truncate">{p.email}</td>
                   <td className="px-4 py-3 truncate">{p.contact ?? "-"}</td>
                   <td className="px-4 py-3 text-center">
-                    <ActionButtons />
+                    <ActionButtons
+                      onEdit={() =>
+                        router.push(`/dashboard/event-list/${event.id}/${p.id}`)
+                      }
+                      noView={true}
+                    />
                   </td>
                 </tr>
               ))}
